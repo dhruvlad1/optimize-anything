@@ -3,7 +3,7 @@
 
 Verifies Python version, OS platform, imports of required optimization
 and quantum computing libraries, and executes minimal sanity checks
-for Qiskit Aer, PennyLane, and PuLP.
+for Qiskit Aer, PennyLane, OR-Tools (SCIP), and SciPy (HiGHS milp).
 """
 
 import importlib
@@ -17,7 +17,6 @@ PACKAGES = [
     ("matplotlib", "matplotlib"),
     ("scikit-learn", "sklearn"),
     ("networkx", "networkx"),
-    ("pulp", "pulp"),
     ("ortools", "ortools"),
     ("psutil", "psutil"),
     ("pytest", "pytest"),
@@ -120,40 +119,84 @@ def test_pennylane() -> list[str]:
     return failures
 
 
-def test_pulp_lp() -> list[str]:
+# Verified against OR-Tools version 9.15.6755
+def test_ortools_scip() -> list[str]:
     print("=" * 60)
-    print("Functional Test: PuLP 2-Variable LP with CBC Solver")
+    print("Functional Test: OR-Tools Integer Program (SCIP Backend)")
     print("=" * 60)
     failures = []
     try:
-        import pulp
+        from ortools.linear_solver import pywraplp
 
-        prob = pulp.LpProblem("Trivial_2Var_LP", pulp.LpMaximize)
-        x = pulp.LpVariable("x", lowBound=0)
-        y = pulp.LpVariable("y", lowBound=0)
+        # Maximize 3x + 2y subject to x + y <= 4, x + 3y <= 6, x, y >= 0 integers
+        solver = pywraplp.Solver.CreateSolver("SCIP")
+        if not solver:
+            raise RuntimeError("SCIP solver unavailable in OR-Tools")
 
-        # Maximize x + 2y subject to x + y <= 4, x <= 2
-        prob += x + 2 * y, "Objective"
-        prob += x + y <= 4, "Constraint_1"
-        prob += x <= 2, "Constraint_2"
+        x = solver.IntVar(0, solver.infinity(), "x")
+        y = solver.IntVar(0, solver.infinity(), "y")
 
-        solver = pulp.PULP_CBC_CMD(msg=False)
-        status = prob.solve(solver)
-        status_label = pulp.LpStatus.get(status, f"Status_{status}")
+        solver.Add(x + y <= 4)
+        solver.Add(x + 3 * y <= 6)
+        solver.Maximize(3 * x + 2 * y)
 
-        val_x = pulp.value(x)
-        val_y = pulp.value(y)
-        val_obj = pulp.value(prob.objective)
+        status = solver.Solve()
+        if status != pywraplp.Solver.OPTIMAL:
+            raise RuntimeError(f"Solver did not find optimal solution (status {status})")
 
-        print(f"LP Status : {status_label}")
-        print(f"Solution  : x = {val_x}, y = {val_y}, Objective = {val_obj}")
+        val_obj = solver.Objective().Value()
+        val_x = x.solution_value()
+        val_y = y.solution_value()
 
-        if status_label != "Optimal":
-            raise RuntimeError(f"Expected Optimal status but got {status_label}")
-        print("[OK]   PuLP LP solve passed.")
+        print("Problem   : maximize 3x + 2y s.t. x + y <= 4, x + 3y <= 6 (integers >= 0)")
+        print(f"Solution  : x = {val_x:.1f}, y = {val_y:.1f}, Objective = {val_obj:.1f}")
+
+        assert round(val_obj) == 12, f"Expected objective 12, got {val_obj}"
+        print("[OK]   OR-Tools SCIP integer program solve passed.")
     except Exception as e:
-        print(f"[FAIL] PuLP LP solve failed: {e}")
-        failures.append(f"PuLP LP check: {e}")
+        print(f"[FAIL] OR-Tools SCIP test failed: {e}")
+        failures.append(f"OR-Tools SCIP check: {e}")
+
+    print()
+    return failures
+
+
+# Verified against SciPy version 1.18.1
+def test_scipy_milp() -> list[str]:
+    print("=" * 60)
+    print("Functional Test: SciPy Mixed-Integer LP (HiGHS)")
+    print("=" * 60)
+    failures = []
+    try:
+        import numpy as np
+        from scipy.optimize import Bounds, LinearConstraint, milp
+
+        # Maximize 3x + 2y  <=>  Minimize -3x - 2y
+        # Subject to:
+        #   x + y <= 4  => -inf <= 1x + 1y <= 4
+        #   x + 3y <= 6 => -inf <= 1x + 3y <= 6
+        #   x, y >= 0, integers
+        c = np.array([-3.0, -2.0])
+        A = np.array([[1.0, 1.0], [1.0, 3.0]])
+        constraints = LinearConstraint(A, -np.inf, [4.0, 6.0])
+        integrality = np.array([1, 1])  # 1 indicates integer variable
+        bounds = Bounds(lb=0.0, ub=np.inf)
+
+        res = milp(c=c, integrality=integrality, constraints=constraints, bounds=bounds)
+        if not res.success:
+            raise RuntimeError(f"SciPy MILP failed to find optimal solution: {res.status}")
+
+        val_obj = -res.fun
+        val_x, val_y = res.x
+
+        print("Problem   : maximize 3x + 2y s.t. x + y <= 4, x + 3y <= 6 (integers >= 0)")
+        print(f"Solution  : x = {val_x:.1f}, y = {val_y:.1f}, Objective = {val_obj:.1f}")
+
+        assert round(val_obj) == 12, f"Expected objective 12, got {val_obj}"
+        print("[OK]   SciPy milp (HiGHS) solve passed.")
+    except Exception as e:
+        print(f"[FAIL] SciPy milp test failed: {e}")
+        failures.append(f"SciPy milp check: {e}")
 
     print()
     return failures
@@ -164,10 +207,15 @@ def main() -> None:
     _, import_failures = check_packages()
     aer_failures = test_qiskit_aer()
     pennylane_failures = test_pennylane()
-    pulp_failures = test_pulp_lp()
+    ortools_failures = test_ortools_scip()
+    scipy_failures = test_scipy_milp()
 
     all_failures = (
-        import_failures + aer_failures + pennylane_failures + pulp_failures
+        import_failures
+        + aer_failures
+        + pennylane_failures
+        + ortools_failures
+        + scipy_failures
     )
 
     print("=" * 60)

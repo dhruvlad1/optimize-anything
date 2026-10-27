@@ -4,7 +4,6 @@ pandas
 matplotlib
 scikit-learn
 networkx
-pulp
 ortools
 psutil
 pytest
