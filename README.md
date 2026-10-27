@@ -1,16 +1,24 @@
 # Optimize Anything
 
+Student: Dhruv Lad | Roll No: 241070037 | Batch: B  
+Subject: Optimization Techniques | Lab Experiment 8: Optimize Anything (14-Day Vibe-Coding Challenge)
+
 Optimization Techniques, Assignment 8: a 14-day vibe-coding challenge compressed into 4 days, systematically exploring diverse mathematical, algorithmic, and systems optimization domains across continuous optimization, discrete algorithms, quantum computing, parallel processing, urban routing, compiler optimization passes, operating systems internals, database query engines, and software engineering workflows.
 
 ## Setup & How to Run
 
-TODO: Add environment setup instructions, dependencies installation, and reproduction steps.
+Execute the following setup commands in Windows PowerShell:
 
-```bash
-# Example setup placeholder
+```powershell
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+python tools/check_env.py
+```
+
+*Note:* If PowerShell blocks script activation, allow it by running:
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
 ## Commit Convention
