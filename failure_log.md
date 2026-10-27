@@ -2,3 +2,5 @@
 
 | # | Track | What the AI got wrong | How I found it | Fix | Lesson |
 | --- | --- | --- | --- | --- | --- |
+| 1 | 00_setup | The generated `check_env.py` used the old PuLP API (`LpVariable(..., lowBound=0)`), which no longer exists in PuLP 4.2.0. | Running `check_env.py` gave `unexpected keyword argument 'lowBound'`. | Inspected the installed signature: in 4.2.0 `LpVariable.__init__` takes only a Rust-backed variable object. | Generated code can target outdated library versions. Run it and inspect the installed API instead of trusting it. |
+| 2 | 00_setup | The AI's first fix (`add_variable`, `COIN_CMD`) looked plausible but did not work: no CBC binary was available, giving `cannot execute cbc.exe`. It also stated the new API as fact without verifying it. | Re-running `check_env.py` after the fix still failed with a different error. | Dropped PuLP and replaced it with OR-Tools (SCIP) and `scipy.optimize.milp` (HiGHS), cross-checked on the same small integer program. | A fix that only changes the error is not a fix. Confirm by running it, and drop fragile dependencies when alternatives exist. |
