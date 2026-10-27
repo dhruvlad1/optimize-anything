@@ -35,6 +35,20 @@ To run the test suite for Track E:
 pytest trackE_mumbai_routing/tests
 ```
 
+## Track F: MiniLang Compiler Optimization
+
+To execute baseline compilation, run on the AST oracle and VM, and generate benchmark performance records:
+
+```powershell
+python trackF_compiler/run_baseline.py
+```
+
+To run the test suite for Track F:
+
+```powershell
+pytest trackF_compiler/tests
+```
+
 ## Commit Convention
 
 All repository commits follow a standardized prefix convention to clearly distinguish AI-assisted generation from manual work:

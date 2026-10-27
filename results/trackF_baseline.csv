@@ -1,0 +1,7 @@
+program,static_instr,dynamic_instr,vm_runtime_s,compile_time_s,output_match
+bench_fib,27,524,0.000105,0.000121,True
+bench_invariant,46,2103018,0.536715,0.000196,True
+bench_mixed,90,1030018,0.296229,0.000422,True
+bench_primes,48,281705,0.075464,0.000246,True
+bench_redundant,61,1100010,0.300368,0.000222,True
+bench_sum,19,1300010,0.316055,9.1e-05,True
