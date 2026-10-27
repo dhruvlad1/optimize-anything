@@ -21,6 +21,20 @@ python tools/check_env.py
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
+## Track E: DabbaDash (Mumbai Last-Mile CVRP)
+
+To execute the baseline benchmarks and generate results across problem sizes $N \in [10, 20, 50, 100, 200]$:
+
+```powershell
+python trackE_mumbai_routing/run_baseline.py
+```
+
+To run the test suite for Track E:
+
+```powershell
+pytest trackE_mumbai_routing/tests
+```
+
 ## Commit Convention
 
 All repository commits follow a standardized prefix convention to clearly distinguish AI-assisted generation from manual work:
