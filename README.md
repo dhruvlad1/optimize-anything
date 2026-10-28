@@ -86,5 +86,7 @@ All repository commits follow a standardized prefix convention to clearly distin
 
 | Tool | Model/version | Tracks | Dates | Kind of work (planning/code generation/debugging/testing/documentation) |
 | --- | --- | --- | --- | --- |
-| Claude | TODO | | | Planning, review, debugging, documentation |
-| Antigravity | TODO | | | Code generation |
+| Claude | Claude Sonnet 5.5 | | | Planning, review, debugging, documentation |
+| Antigravity | -- | | | Code generation |
+| Claude | Claude Sonnet 5.5 | 00_setup, E, F, G, H | 2026-10-27 to 2026-10-28 | Planning, prompt writing, review of results, debugging, documentation (prompt logs, failure log) |
+| Antigravity | -- | 00_setup, E, F, H | 2026-10-27 to 2026-10-28 | Code generation, running tests and benchmarks |
