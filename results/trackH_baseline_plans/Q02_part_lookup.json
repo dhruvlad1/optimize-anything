@@ -1,0 +1,80 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Sort",
+      "Parallel Aware": false,
+      "Async Capable": false,
+      "Startup Cost": 632.52,
+      "Total Cost": 632.84,
+      "Plan Rows": 129,
+      "Plan Width": 48,
+      "Actual Startup Time": 1.07,
+      "Actual Total Time": 1.074,
+      "Actual Rows": 151.0,
+      "Actual Loops": 1,
+      "Disabled": false,
+      "Sort Key": [
+        "p_partkey"
+      ],
+      "Sort Method": "quicksort",
+      "Sort Space Used": 35,
+      "Sort Space Type": "Memory",
+      "Shared Hit Blocks": 331,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0,
+      "Plans": [
+        {
+          "Node Type": "Seq Scan",
+          "Parent Relationship": "Outer",
+          "Parallel Aware": false,
+          "Async Capable": false,
+          "Relation Name": "part",
+          "Alias": "part",
+          "Startup Cost": 0.0,
+          "Total Cost": 628.0,
+          "Plan Rows": 129,
+          "Plan Width": 48,
+          "Actual Startup Time": 0.01,
+          "Actual Total Time": 1.038,
+          "Actual Rows": 151.0,
+          "Actual Loops": 1,
+          "Disabled": false,
+          "Filter": "(((p_type)::text ~~ 'STANDARD%'::text) AND (p_brand = 'Brand#13'::bpchar))",
+          "Rows Removed by Filter": 19849,
+          "Shared Hit Blocks": 328,
+          "Shared Read Blocks": 0,
+          "Shared Dirtied Blocks": 0,
+          "Shared Written Blocks": 0,
+          "Local Hit Blocks": 0,
+          "Local Read Blocks": 0,
+          "Local Dirtied Blocks": 0,
+          "Local Written Blocks": 0,
+          "Temp Read Blocks": 0,
+          "Temp Written Blocks": 0
+        }
+      ]
+    },
+    "Planning": {
+      "Shared Hit Blocks": 66,
+      "Shared Read Blocks": 0,
+      "Shared Dirtied Blocks": 0,
+      "Shared Written Blocks": 0,
+      "Local Hit Blocks": 0,
+      "Local Read Blocks": 0,
+      "Local Dirtied Blocks": 0,
+      "Local Written Blocks": 0,
+      "Temp Read Blocks": 0,
+      "Temp Written Blocks": 0
+    },
+    "Planning Time": 0.245,
+    "Triggers": [],
+    "Execution Time": 1.09
+  }
+]

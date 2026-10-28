@@ -49,6 +49,32 @@ To run the test suite for Track F:
 pytest trackF_compiler/tests
 ```
 
+## Track H: DBMS Optimization (Index Selection)
+
+Requires PostgreSQL running in WSL2 with database `optdb`, user `optuser`.
+
+```powershell
+# Set password (never commit this)
+$env:PGPASSWORD = "your_password"
+
+# (WSL2) start PostgreSQL
+wsl sudo service postgresql start
+
+# Generate synthetic data and load into DB
+python -m trackH_dbms.load_data
+
+# Run baseline workload (no secondary indexes)
+python trackH_dbms/run_baseline.py
+
+# Run test suite (skipped gracefully if DB unavailable)
+pytest trackH_dbms/tests -v
+```
+
+Results are written to:
+- `results/trackH_baseline.csv` — per-query latency summary
+- `results/trackH_baseline_plans/` — EXPLAIN ANALYZE JSON plans
+- `results/trackH_environment.json` — PostgreSQL version and settings
+
 ## Commit Convention
 
 All repository commits follow a standardized prefix convention to clearly distinguish AI-assisted generation from manual work:

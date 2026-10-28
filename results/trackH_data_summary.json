@@ -1,0 +1,44 @@
+{
+  "region": {
+    "generated_rows": 5,
+    "db_rows": 5,
+    "size_bytes": 24576,
+    "csv_md5": "290325b75d606f4e483ed4aae03b5b4d"
+  },
+  "nation": {
+    "generated_rows": 25,
+    "db_rows": 25,
+    "size_bytes": 24576,
+    "csv_md5": "40723f509c8759268299b73fffc8d8ff"
+  },
+  "supplier": {
+    "generated_rows": 1000,
+    "db_rows": 1000,
+    "size_bytes": 262144,
+    "csv_md5": "7d1016477ccf8531e253e46acb7b84f9"
+  },
+  "customer": {
+    "generated_rows": 15000,
+    "db_rows": 15000,
+    "size_bytes": 3260416,
+    "csv_md5": "75b67e2ea812701842e557251936be34"
+  },
+  "part": {
+    "generated_rows": 20000,
+    "db_rows": 20000,
+    "size_bytes": 3506176,
+    "csv_md5": "3349227655ba52bdeb9f9895f0bf6d51"
+  },
+  "orders": {
+    "generated_rows": 150000,
+    "db_rows": 150000,
+    "size_bytes": 20979712,
+    "csv_md5": "36777ead7b12b57982f1fb0670663c72"
+  },
+  "lineitem": {
+    "generated_rows": 590805,
+    "db_rows": 590805,
+    "size_bytes": 101613568,
+    "csv_md5": "fe712a03adae928b5f0e55b89b001510"
+  }
+}

@@ -1,0 +1,11 @@
+query,weight,median_latency_ms,row_count,planning_time_ms,execution_time_ms,estimated_total_cost,shared_hit_blocks,shared_read_blocks,plan_node_types
+Q01_lineitem_range,3,81.609,6,0.982,119.703,20194.29,10790,0,Aggregate|Gather Merge|Sort|Aggregate|Seq Scan
+Q02_part_lookup,2,1.835,151,0.253,1.098,632.84,331,0,Sort|Seq Scan
+Q03_orders_customer_join,3,11.455,100,0.534,15.976,5302.65,2765,0,Limit|Gather Merge|Sort|Hash Join|Seq Scan|Hash|Seq Scan
+Q04_three_table_agg,2,507.988,5,0.327,995.2,105583.98,13227,0,Sort|Aggregate|Sort|Hash Join|Hash Join|Seq Scan|Hash|Seq Scan|Hash|Seq Scan
+Q05_four_table_join,1,41.387,25,0.4,63.968,19700.63,13860,0,Sort|Aggregate|Gather Merge|Sort|Aggregate|Hash Join|Hash Join|Hash Join|Seq Scan|Hash|Seq Scan|Hash|Seq Scan|Hash|Seq Scan
+Q06_discount_revenue,2,26.467,1,0.094,26.757,17340.45,10776,0,Aggregate|Gather|Aggregate|Seq Scan
+Q07_supplier_nation,1,180.86,1250,0.476,214.121,54687.51,13949,0,Aggregate|Gather Merge|Sort|Hash Join|Hash Join|Hash Join|Hash Join|Hash Join|Seq Scan|Hash|Seq Scan|Hash|Seq Scan|Hash|Seq Scan|Hash|Seq Scan|Hash|Seq Scan
+Q08_group_by_shipmode,2,54.099,7,0.081,60.55,16086.4,10790,0,Aggregate|Gather Merge|Sort|Aggregate|Seq Scan
+Q09_custkey_orders_filter,2,12.775,200,0.094,16.498,4726.8,2182,0,Limit|Gather Merge|Sort|Seq Scan
+Q10_late_lineitems,1,0.86,500,0.073,0.204,106.43,25,0,Limit|Index Scan
