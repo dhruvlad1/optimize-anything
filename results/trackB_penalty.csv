@@ -1,0 +1,6 @@
+Penalty Multiplier,Feasible Seeds (%),Optimal Seeds (%),Observation
+0.1 * max(v),0.0,0.0,Too small: constraint violated (infeasible)
+0.5 * max(v),0.0,0.0,Too small: constraint violated (infeasible)
+1.0 * max(v),100.0,100.0,Robust: 100% feasible and optimal
+2.0 * max(v),100.0,100.0,Robust: 100% feasible and optimal
+5.0 * max(v),100.0,100.0,Robust: 100% feasible and optimal

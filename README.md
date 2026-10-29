@@ -51,6 +51,21 @@ pytest trackA_continuous/compare/test_backprop_compare.py -v
 
 Results (CSV + PNG) are written to `results/`.
 
+## Track B: Discrete Optimization & QUBO
+
+```powershell
+# 1. 0/1 Knapsack benchmarks (equivalence on n=15,20; scaling on n=50,200,1000)
+python -m trackB_discrete.exp1_knapsack
+
+# 2. QUBO, Max-Cut, and Ising benchmarks
+python -m trackB_discrete.exp2_qubo
+
+# 3. Test suite
+pytest trackB_discrete/tests -v
+```
+
+Results (CSV + PNG + JSON instances) are written to `results/`.
+
 ## Track E: DabbaDash (Mumbai Last-Mile CVRP)
 
 To execute the baseline benchmarks and generate results across problem sizes $N \in [10, 20, 50, 100, 200]$:
