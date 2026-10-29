@@ -123,3 +123,30 @@ Every compilation and execution run is benchmarked across four fundamental metri
 - **Runtime (s):** Wall-clock execution time of the virtual machine running the compiled bytecode, measured using high-precision performance timers (`time.perf_counter`) over multiple runs (median of 5).
 - **Compile Time (s):** Wall-clock duration required to lex, parse, validate, lower to IR, and emit VM bytecode (median of 5).
 - **Functional Equivalence:** Strict equality check verifying that the VM output matches the AST reference oracle output identically on all test programs.
+
+---
+
+## 5. Pass Ordering Formulation as an Optimization Problem
+
+Phase ordering in optimizing compilers is a classical combinatorial search problem over non-commutative transformation spaces. Different optimization passes expose, enable, or destroy opportunities for subsequent passes (e.g., constant folding creates dead code, while common subexpression elimination exposes loop invariants).
+
+### Mathematical Formulation:
+- **Decision Variable:**
+  $$P = (p_1, p_2, \dots, p_L) \quad \text{where} \quad 0 \le L \le 5, \quad p_i \in \mathcal{P}$$
+  where the candidate pass alphabet is:
+  $$\mathcal{P} = \{\text{constant\_fold}, \text{dead\_code\_elim}, \text{cse}, \text{licm}, \text{strength\_reduce}\}$$
+  with repetition explicitly allowed.
+- **Objective Function:**
+  $$\min_{P} \mathcal{J}(P) = \sum_{b \in \mathcal{B}} \text{DynamicInstrCount}(b, P)$$
+  where $\mathcal{B}$ denotes the set of six canonical MiniLang benchmark programs (`bench_fib`, `bench_invariant`, `bench_mixed`, `bench_primes`, `bench_redundant`, `bench_sum`).
+- **Correctness Constraint:**
+  $$\text{Output}_{\text{VM}}(b, P) \equiv \text{Output}_{\text{Oracle}}(b), \quad \forall b \in \mathcal{B}$$
+- **Resource / Time Constraint:**
+  $$\text{CompileTime}(b, P) \le T_{\text{budget}} \quad (\text{e.g., } 50\text{ ms per program})$$
+
+### Search Strategies Evaluated:
+1. **Baseline / Unoptimized (Level 0):** $P = ()$
+2. **Standard Fixed Order (Level 1):** $P = (\text{constant\_fold}, \text{cse}, \text{licm}, \text{strength\_reduce}, \text{dead\_code\_elim})$
+3. **Exhaustive Permutations ($5! = 120$ orders):** Search all distinct permutations of the 5 passes without repetition.
+4. **Exhaustive Sequences with Repetition (length $\le 5$):** Evaluates all $\sum_{k=1}^5 5^k = 3905$ sequences.
+5. **Greedy Search:** Iteratively appends the single pass $p^* \in \mathcal{P}$ yielding the steepest dynamic instruction count reduction on the current program state until no further reduction is obtained.

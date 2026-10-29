@@ -68,10 +68,14 @@ class VirtualMachine:
                 _, dest, bin_op, src1, src2 = inst
                 val1 = self.registers[src1]
                 val2 = self.registers[src2]
-                try:
-                    self.registers[dest] = apply_binary_op(bin_op, val1, val2)
-                except ZeroDivisionError as e:
-                    raise ZeroDivisionError(f"VM runtime error at pc {pc}: {e}") from None
+                if bin_op == "<<":
+                    # 64-bit wraparound semantics identical to multiplication by 2^val2
+                    self.registers[dest] = wrap64(val1 << val2) if 0 <= val2 < 64 else 0
+                else:
+                    try:
+                        self.registers[dest] = apply_binary_op(bin_op, val1, val2)
+                    except ZeroDivisionError as e:
+                        raise ZeroDivisionError(f"VM runtime error at pc {pc}: {e}") from None
                 pc += 1
 
             elif op == "UNARY":

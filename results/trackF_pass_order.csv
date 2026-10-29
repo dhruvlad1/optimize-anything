@@ -1,0 +1,6 @@
+Search Strategy,Best Pass Sequence,Total Dynamic Instructions,Total Static Instructions,Candidates Evaluated,Search Time (s),Correctness
+(a) No Optimization,[],6309,291,1,0.0016,MATCH
+(b) Fixed Order,constant_fold -> cse -> licm -> strength_reduce -> dead_code_elim,3588,213,1,0.0024,MATCH
+(c) Exhaustive Permutations (120),licm -> constant_fold -> cse -> strength_reduce -> dead_code_elim,3493,172,120,0.2748,MATCH
+(d) Repetition Subset (len<=2; 3905 skipped),licm -> cse,3920,221,30,0.0547,MATCH
+(e) Greedy Forward Selection,licm -> cse -> dead_code_elim -> dead_code_elim,3504,183,25,0.0329,MATCH
