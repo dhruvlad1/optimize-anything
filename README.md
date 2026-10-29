@@ -88,10 +88,40 @@ To execute baseline compilation, run on the AST oracle and VM, and generate benc
 python trackF_compiler/run_baseline.py
 ```
 
-To run the test suite for Track F:
+To compile a MiniLang program with optimization passes:
 
 ```powershell
-pytest trackF_compiler/tests
+# Full fixed-order pipeline (constant_fold -> cse -> licm -> strength_reduce -> dead_code_elim)
+python -m trackF_compiler.minilang.compiler <file.ml> --opt 1
+
+# Custom pass sequence
+python -m trackF_compiler.minilang.compiler <file.ml> --passes constant_fold,cse,dead_code_elim
+```
+
+To run the differential fuzzer (300 randomly generated programs verified against the AST oracle):
+
+```powershell
+python -m trackF_compiler.fuzz
+```
+
+To search for the best pass ordering (exhaustive permutations + greedy; uses scaled-down benchmarks for speed):
+
+```powershell
+python -m trackF_compiler.exp_pass_order
+# Writes: results/trackF_pass_order.csv
+```
+
+To run the full ablation benchmark (baseline vs single passes vs fixed order vs best order):
+
+```powershell
+python -m trackF_compiler.run_optimized
+# Writes: results/trackF_optimized.csv  results/trackF_optimized_bar.png
+```
+
+To run the full test suite for Track F (18 tests):
+
+```powershell
+python -m pytest trackF_compiler/ -v
 ```
 
 ## Track H: DBMS Optimization (Index Selection)
