@@ -38,8 +38,15 @@ python -m trackA_continuous.exp2_nonconvex
 # 4. Noisy gradient & finite-sum experiments
 python -m trackA_continuous.exp4_noisy
 
-# 5. Test suite
+# 5. Machine learning optimization benchmark on make_moons
+python -m trackA_continuous.exp5_backprop_ml
+
+# 6. Curvature methods (HVP, Gauss-Newton, Empirical Fisher)
+python -m trackA_continuous.exp6_curvature
+
+# 7. Test suite (including test_optimizers, test_objectives, test_curvature)
 pytest trackA_continuous/tests -v
+pytest trackA_continuous/compare/test_backprop_compare.py -v
 ```
 
 Results (CSV + PNG) are written to `results/`.
