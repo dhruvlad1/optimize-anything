@@ -68,16 +68,24 @@ Results (CSV + PNG + JSON instances) are written to `results/`.
 
 ## Track E: DabbaDash (Mumbai Last-Mile CVRP)
 
-To execute the baseline benchmarks and generate results across problem sizes $N \in [10, 20, 50, 100, 200]$:
+To execute baseline heuristics (driver order and nearest neighbour) across problem sizes $N \in [10, 20, 50, 100, 200]$:
 
 ```powershell
-python trackE_mumbai_routing/run_baseline.py
+python -m trackE_mumbai_routing.run_baseline
+# Writes: results/trackE_baseline.csv, results/trackE_baseline_map.png
 ```
 
-To run the test suite for Track E:
+To run the comprehensive comparison benchmark (exact ILP on small instances, scaling study on $N \in [20, 50, 100, 200]$, multi-core parallelism, and route maps):
 
 ```powershell
-pytest trackE_mumbai_routing/tests
+python -m trackE_mumbai_routing.run_comparison
+# Writes: results/trackE_comparison.csv, results/trackE_scaling.png, results/trackE_routes_n50.png
+```
+
+To run the Track E test suite:
+
+```powershell
+python -m pytest trackE_mumbai_routing/ -v
 ```
 
 ## Track F: MiniLang Compiler Optimization
