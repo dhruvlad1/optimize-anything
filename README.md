@@ -21,6 +21,29 @@ python tools/check_env.py
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
+## Track A: Continuous Optimization
+
+> **Run exp3_sensitivity first** — it writes the tuned learning rates consumed by the other experiments.
+
+```powershell
+# 1. Sensitivity sweep & tuned-LR generation (run first)
+python -m trackA_continuous.exp3_sensitivity
+
+# 2. Convex benchmark (reads tuned LRs)
+python -m trackA_continuous.exp1_convex
+
+# 3. Non-convex experiments
+python -m trackA_continuous.exp2_nonconvex
+
+# 4. Noisy gradient & finite-sum experiments
+python -m trackA_continuous.exp4_noisy
+
+# 5. Test suite
+pytest trackA_continuous/tests -v
+```
+
+Results (CSV + PNG) are written to `results/`.
+
 ## Track E: DabbaDash (Mumbai Last-Mile CVRP)
 
 To execute the baseline benchmarks and generate results across problem sizes $N \in [10, 20, 50, 100, 200]$:

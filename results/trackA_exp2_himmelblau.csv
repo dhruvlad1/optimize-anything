@@ -1,0 +1,4 @@
+optimizer,basin_0,basin_1,basin_2,basin_3
+gd,3,7,5,5
+momentum,3,7,5,5
+adam,3,7,5,5

@@ -1,0 +1,8 @@
+Method,y0,Iterations to f < -0.9,Final f,Note
+GD,1.0e-06,152,-0.905673,escapes slowly; escape time grows with log(1/y0)
+GD,1.0e-04,104,-0.914146,escapes slowly; escape time grows with log(1/y0)
+GD,1.0e-02,56,-0.922028,escapes slowly; escape time grows with log(1/y0)
+GD,1.0e-01,31,-0.900516,escapes slowly; escape time grows with log(1/y0)
+Perturbed-GD,1.0e-06,55,-0.906938,random perturbation accelerates escape
+Damped-Newton,1.0e-06,6,-0.976155,regularized curvature guides directly to descent
+Pure-Newton,1.0e-06,not escaped,0.000000,"converges to saddle point (0,0); failure of unregularized Newton"

@@ -1,0 +1,30 @@
+{
+  "gd": {
+    "quadratic": 0.018478497974222907,
+    "rosenbrock": 0.0021544346900318843
+  },
+  "momentum": {
+    "quadratic": 0.00630957344480193,
+    "rosenbrock": 0.0007356422544596414
+  },
+  "nag": {
+    "quadratic": 0.00630957344480193,
+    "rosenbrock": 0.0007356422544596414
+  },
+  "adagrad": {
+    "quadratic": 3.981071705534969,
+    "rosenbrock": 1.3593563908785269
+  },
+  "rmsprop": {
+    "quadratic": 0.018478497974222907,
+    "rosenbrock": 0.018478497974222907
+  },
+  "adam": {
+    "quadratic": 0.4641588833612782,
+    "rosenbrock": 0.4641588833612782
+  },
+  "newton": {
+    "quadratic": 1.0,
+    "rosenbrock": 1.0
+  }
+}
