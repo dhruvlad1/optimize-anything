@@ -110,3 +110,17 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64
+sys_settickets(void)
+{
+  int n;
+  argint(0, &n);
+  if (n < 1 || n > 10000)
+    return -1;
+  struct proc *p = myproc();
+  acquire(&p->lock);
+  p->tickets = n;
+  release(&p->lock);
+  return 0;
+}

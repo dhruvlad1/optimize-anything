@@ -26,6 +26,27 @@ extern char trampoline[]; // trampoline.S
 // must be acquired before any p->lock.
 struct spinlock wait_lock;
 
+#ifdef SCHED_LOTTERY
+// xorshift32 pseudo-random generator with a fixed non-zero seed.
+// The fixed seed makes scheduling runs reproducible across executions.
+static uint32 rand_state = 2463534242UL;
+static struct spinlock rand_lock;
+
+static uint32
+rand(void)
+{
+  uint32 x;
+  acquire(&rand_lock);
+  x = rand_state;
+  x ^= x << 13;
+  x ^= x >> 17;
+  x ^= x << 5;
+  rand_state = x;
+  release(&rand_lock);
+  return x;
+}
+#endif
+
 // Allocate a page for each process's kernel stack.
 // Map it high in memory, followed by an invalid
 // guard page.
@@ -51,6 +72,9 @@ procinit(void)
 
   initlock(&pid_lock, "nextpid");
   initlock(&wait_lock, "wait_lock");
+#ifdef SCHED_LOTTERY
+  initlock(&rand_lock, "rand");
+#endif
   for (p = proc; p < &proc[NPROC]; p++) {
     initlock(&p->lock, "proc");
     p->state = UNUSED;
@@ -124,6 +148,7 @@ allocproc(void)
 found:
   p->pid = allocpid();
   p->state = USED;
+  p->tickets = 1;
 
   // Allocate a trapframe page.
   if ((p->trapframe = (struct trapframe *)kalloc()) == 0) {
@@ -289,6 +314,9 @@ kfork(void)
 
   safestrcpy(np->name, p->name, sizeof(p->name));
 
+  // Copy parent's tickets to child
+  np->tickets = p->tickets;
+
   pid = np->pid;
 
   release(&np->lock);
@@ -432,6 +460,73 @@ scheduler(void)
   struct cpu *c = mycpu();
 
   c->proc = 0;
+#ifdef SCHED_LOTTERY
+  for (;;) {
+    // The most recent process to run may have had interrupts
+    // turned off; enable them to avoid a deadlock if all
+    // processes are waiting. Then turn them back off
+    // to avoid a possible race between an interrupt
+    // and wfi.
+    intr_on();
+    intr_off();
+
+    // Pass 1: compute total tickets of all RUNNABLE processes.
+    int total = 0;
+    for (p = proc; p < &proc[NPROC]; p++) {
+      acquire(&p->lock);
+      if (p->state == RUNNABLE) {
+        total += p->tickets;
+      }
+      release(&p->lock);
+    }
+
+    if (total == 0) {
+      // Nothing to run; stop running on this core until an interrupt.
+      asm volatile("wfi");
+    } else {
+      // Lottery scheduling math:
+      // Suppose there are m runnable processes with tickets T_1, T_2, ..., T_m,
+      // where total = sum(T_i). We draw winner uniformly in {0, 1, ..., total - 1}.
+      // Process i is selected when the accumulated tickets exceed winner, which corresponds
+      // to winner falling into the interval of length T_i: [sum_{j<i} T_j, sum_{j<=i} T_j).
+      // Since winner is uniformly distributed across the 'total' tickets, each runnable
+      // process wins with probability tickets / total.
+      uint32 winner = rand() % total;
+      int counter = 0;
+
+      // Pass 2: find and run the winning process.
+      intr_on();
+      intr_off();
+      for (p = proc; p < &proc[NPROC]; p++) {
+        acquire(&p->lock);
+        if (p->state == RUNNABLE) {
+          counter += p->tickets;
+          if (counter > winner) {
+            // Switch to chosen process.  It is the process's job
+            // to release its lock and then reacquire it
+            // before jumping back to us.
+            p->state = RUNNING;
+            c->proc = p;
+            swtch(&c->context, &p->context);
+
+            // Don't re-enable interrupts on release.
+            mycpu()->intena = 0;
+
+            // Process is done running for now.
+            // It should have changed its p->state before coming back.
+            c->proc = 0;
+            release(&p->lock);
+            break;
+          }
+        }
+        release(&p->lock);
+      }
+      // If pass 2 finds no winner (another CPU changed a state between the passes),
+      // simply start the loop again; never hold two p->locks at once and never swtch
+      // without holding p->lock.
+    }
+  }
+#else
   for (;;) {
     // The most recent process to run may have had interrupts
     // turned off; enable them to avoid a deadlock if all
@@ -467,6 +562,7 @@ scheduler(void)
       asm volatile("wfi");
     }
   }
+#endif
 }
 
 // Switch to scheduler.  Must hold only p->lock
