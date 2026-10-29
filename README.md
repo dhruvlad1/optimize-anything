@@ -139,15 +139,31 @@ wsl sudo service postgresql start
 python -m trackH_dbms.load_data
 
 # Run baseline workload (no secondary indexes)
-python trackH_dbms/run_baseline.py
+python -m trackH_dbms.run_baseline
 
-# Run test suite (skipped gracefully if DB unavailable)
-pytest trackH_dbms/tests -v
+# Build offline cost model across candidate secondary indexes
+python -m trackH_dbms.build_cost_model
+# Writes: results/trackH_cost_model.json, results/trackH_candidate_benefits.csv
+
+# Run index selection optimization across budgets (greedy, DP, ILP) and measure physical performance
+python -m trackH_dbms.run_index_selection
+# Writes: results/trackH_index_selection.csv, results/trackH_plans_after/, results/trackH_latency_vs_budget.png
+
+# Run offline index selection solver test suite (no database required)
+python -m pytest trackH_dbms/tests/test_index_solvers.py -v
+
+# Run full database test suite (skipped gracefully if DB unavailable)
+python -m pytest trackH_dbms/tests -v
 ```
 
 Results are written to:
 - `results/trackH_baseline.csv` — per-query latency summary
 - `results/trackH_baseline_plans/` — EXPLAIN ANALYZE JSON plans
+- `results/trackH_cost_model.json` — per-query per-candidate offline cost matrix
+- `results/trackH_candidate_benefits.csv` — candidate sizes, build times, and benefits per MB
+- `results/trackH_index_selection.csv` — physical performance across budgets and methods
+- `results/trackH_plans_after/` — post-optimization EXPLAIN plans for top improved queries
+- `results/trackH_latency_vs_budget.png` — latency vs storage budget trade-off curves
 - `results/trackH_environment.json` — PostgreSQL version and settings
 
 ## Commit Convention

@@ -1,0 +1,19 @@
+candidate,table,size_bytes,size_mb,creation_time_s,total_benefit,benefit_per_mb,rationale,useless
+optidx_lineitem_shipdate,lineitem,4243456,4.0469,0.1894,10393.17,2568.2,"Accelerates date range scans on l_shipdate in Q01, Q06, and Q07.",False
+optidx_lineitem_partkey,lineitem,4464640,4.2578,0.1562,-384.9,-90.4,Accelerates foreign key joins on l_partkey with the part table.,False
+optidx_lineitem_suppkey,lineitem,4194304,4.0,0.1633,90.64,22.66,Accelerates foreign key joins on l_suppkey with the supplier table in Q07.,False
+optidx_lineitem_orderkey_shipdate,lineitem,13295616,12.6797,0.1466,-583.06,-45.98,Composite index supporting orderkey joins with shipdate range filtering in Q07.,False
+optidx_lineitem_discount_shipdate,lineitem,18407424,17.5547,0.4098,11808.97,672.7,Composite index matching simultaneous range filters on l_discount and l_shipdate in Q06.,False
+optidx_lineitem_shipmode,lineitem,4194304,4.0,0.2572,-276.84,-69.21,Enables index-only or index scan grouping on l_shipmode in Q08.,False
+optidx_lineitem_receipt_commit,lineitem,12402688,11.8281,0.1779,-136.2,-11.51,Composite index on receipt and commit dates for late lineitem inspection in Q10.,False
+optidx_orders_custkey,orders,1409024,1.3438,0.0514,4773.37,3552.28,"Accelerates customer foreign key joins in Q03, Q04, Q05, Q07 and range filter in Q09.",False
+optidx_orders_orderdate,orders,1064960,1.0156,0.0437,2047.43,2015.93,Accelerates order date range scans in Q03 and Q05.,False
+optidx_orders_custkey_orderdate,orders,3391488,3.2344,0.0568,4746.91,1467.64,Composite index covering customer join and orderdate ordering/filtering in Q03 and Q09.,False
+optidx_orders_orderstatus,orders,1056768,1.0078,0.0623,2115.57,2099.17,Index on low-cardinality order status filter in Q09.,False
+optidx_customer_mktsegment,customer,131072,0.125,0.0092,205.59,1644.72,Index on market segment predicate filter in Q03 and aggregation group in Q04.,False
+optidx_customer_nationkey,customer,122880,0.1172,0.0058,-128.97,-1100.54,Accelerates customer-to-nation foreign key joins in Q05 and Q07.,False
+optidx_part_brand_type,part,163840,0.1562,0.0193,429.03,2745.79,Composite index matching equality on p_brand and prefix match on p_type in Q02.,False
+optidx_part_type,part,155648,0.1484,0.0097,-128.97,-868.85,Single-column index on part type prefix pattern search in Q02.,False
+optidx_supplier_nationkey,supplier,16384,0.0156,0.0023,-128.97,-8254.08,Accelerates supplier-to-nation foreign key joins in Q07.,False
+optidx_customer_acctbal_useless,customer,352256,0.3359,0.0054,-128.97,-383.91,Deliberately useless index: c_acctbal never appears in any query in the workload.,True
+optidx_part_size_useless,part,163840,0.1562,0.0075,-128.97,-825.41,Deliberately useless index: p_size is only projected in Q02 and never used for filtering or joins.,True
