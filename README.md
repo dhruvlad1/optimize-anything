@@ -132,6 +132,20 @@ To run the full test suite for Track F (18 tests):
 python -m pytest trackF_compiler/ -v
 ```
 
+## Track G: Operating Systems Optimization (xv6 Lottery Scheduler)
+
+To build and run the comprehensive scheduling benchmark suite comparing Round-Robin and Lottery scheduling in xv6-riscv under single-core QEMU (`CPUS=1`):
+
+```bash
+# Inside WSL Ubuntu (from repository root):
+python3 trackG_xv6/run_bench.py
+```
+
+Outputs written to:
+- `results/trackG_raw_RR.txt` — raw QEMU console log for default Round-Robin scheduler
+- `results/trackG_raw_LOTTERY.txt` — raw QEMU console log for Lottery scheduler
+- `results/trackG_bench.csv` — parsed measurement records across calibration, W1, W2, and W3
+
 ## Track H: DBMS Optimization (Index Selection)
 
 Requires PostgreSQL running in WSL2 with database `optdb`, user `optuser`.
