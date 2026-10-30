@@ -66,6 +66,41 @@ pytest trackB_discrete/tests -v
 
 Results (CSV + PNG + JSON instances) are written to `results/`.
 
+## Track C: Quantum Optimization (QAOA)
+
+Simulates the Quantum Approximate Optimization Algorithm (QAOA) for Max-Cut on the 15 instances from Track B ($n \in \{10, 12, 14\}$).
+
+> **NOTE:** All quantum results are **SIMULATED** on classical hardware using NumPy statevectors and PennyLane simulators (`default.qubit` and `default.mixed`). No physical quantum computers were used.
+
+### Usage
+
+```powershell
+# 1. QAOA depth sweep (p in {1, 2, 3}), classical baseline comparison, and landscape plots
+python -m trackC_quantum_opt.exp1_qaoa
+
+# 2. Finite shot noise scaling (1/sqrt(S)) and shot-based optimization
+python -m trackC_quantum_opt.exp2_shots
+
+# 3. Depolarizing noise simulation on 8-qubit graphs with default.mixed
+python -m trackC_quantum_opt.exp3_noise
+
+# 4. Pytest test suite (analytical gradients, PennyLane equivalence, noise models)
+python -m pytest trackC_quantum_opt -q
+```
+
+### Outputs
+
+| File | Description |
+|------|-------------|
+| `results/trackC_qaoa.csv` | QAOA depth sweep records across instances, depths, and optimizers |
+| `results/trackC_shots.csv` | Empirical shot noise statistics across shot counts $S \in [10^2, 10^5]$ |
+| `results/trackC_noise.csv` | Depolarizing noise approximation ratios for $p \in \{1, 2\}$ |
+| `results/trackC_exp1_depth.png` | Approximation ratio vs QAOA depth $p$ per optimizer |
+| `results/trackC_exp1_landscape.png` | 2D $(\gamma, \beta)$ loss landscape for $n=10, p=1$ |
+| `results/trackC_exp2_shots.png` | Empirical shot standard deviation vs $S$ (log-log scaling) |
+| `results/trackC_exp3_noise.png` | Approximation ratio degradation under depolarizing error rate $q$ |
+
+
 ## Track E: DabbaDash (Mumbai Last-Mile CVRP)
 
 To execute baseline heuristics (driver order and nearest neighbour) across problem sizes $N \in [10, 20, 50, 100, 200]$:
