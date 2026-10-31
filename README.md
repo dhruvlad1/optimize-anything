@@ -84,7 +84,16 @@ python -m trackC_quantum_opt.exp2_shots
 # 3. Depolarizing noise simulation on 8-qubit graphs with default.mixed
 python -m trackC_quantum_opt.exp3_noise
 
-# 4. Pytest test suite (analytical gradients, PennyLane equivalence, noise models)
+# 4. Variational Quantum Eigensolver (VQE) & Quantum Natural Gradient (QNG) on spin chains
+python -m trackC_quantum_opt.exp4_vqe
+
+# 5. Quantum Neural Network (QNN) data-re-uploading classifier on make_moons
+python -m trackC_quantum_opt.exp5_qnn
+
+# 6. Barren plateaus and cost function locality scaling study
+python -m trackC_quantum_opt.exp6_barren
+
+# 7. Pytest test suite (QAOA, VQE, QNG, metric tensors, noise, and sampling)
 python -m pytest trackC_quantum_opt -q
 ```
 
@@ -94,11 +103,19 @@ python -m pytest trackC_quantum_opt -q
 |------|-------------|
 | `results/trackC_qaoa.csv` | QAOA depth sweep records across instances, depths, and optimizers |
 | `results/trackC_shots.csv` | Empirical shot noise statistics across shot counts $S \in [10^2, 10^5]$ |
+| `results/trackC_shots_opt.csv` | Finite-shot optimization records across SPSA, COBYLA, and Adam |
 | `results/trackC_noise.csv` | Depolarizing noise approximation ratios for $p \in \{1, 2\}$ |
+| `results/trackC_vqe.csv` | VQE and QNG benchmark records on TFIM and Heisenberg spin chains |
+| `results/trackC_qnn.csv` | 2-qubit data-re-uploading classifier performance on make_moons |
+| `results/trackC_barren.csv` | Barren plateau gradient variance scaling across qubits $n$ and depth $L$ |
 | `results/trackC_exp1_depth.png` | Approximation ratio vs QAOA depth $p$ per optimizer |
 | `results/trackC_exp1_landscape.png` | 2D $(\gamma, \beta)$ loss landscape for $n=10, p=1$ |
 | `results/trackC_exp2_shots.png` | Empirical shot standard deviation vs $S$ (log-log scaling) |
 | `results/trackC_exp3_noise.png` | Approximation ratio degradation under depolarizing error rate $q$ |
+| `results/trackC_exp4_vqe_convergence.png` | VQE energy error convergence vs iterations across spin chains |
+| `results/trackC_exp5_qnn_decision.png` | QNN decision boundary on make_moons classification |
+| `results/trackC_exp6_barren_qubits.png` | Barren plateau variance decay vs number of qubits $n$ |
+| `results/trackC_exp6_barren_depth.png` | Barren plateau variance decay vs circuit depth $L$ at $n=6$ |
 
 
 ## Track E: DabbaDash (Mumbai Last-Mile CVRP)

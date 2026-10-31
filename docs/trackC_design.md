@@ -94,3 +94,42 @@ To ensure rigorous benchmarking across classical and quantum solvers:
 - **Equal Evaluation Budgets:** Every quantum optimizer (Adam, COBYLA, SPSA) is constrained to an identical budget of **300 circuit evaluations** per run.
 - **Multiple Fixed Starts:** Each depth $p \in \{1, 2, 3\}$ is evaluated across 5 reproducible random starts with initial angles $\gamma \in [0, \pi]$, $\beta \in [0, \pi/2]$.
 - **Classical Reference Baselines:** Performance is compared against classical Greedy Local Search (20 restarts), Simulated Annealing (10 runs), the theoretical Random Assignment expectation ($\frac{1}{2} \sum w_e$), and the exact global optimum computed via branch-and-bound / ILP.
+
+---
+
+## 7. Variational Quantum Eigensolver (VQE) & Quantum Natural Gradient (QNG)
+
+> **Notice:** All VQE, QNG, QNN, and barren plateau studies in Part 2 are strictly **SIMULATED** on classical computers using PennyLane `default.qubit` and autograd. No physical quantum processor is used.
+
+### 7.1 VQE & The Variational Principle
+For a physical quantum system governed by Hamiltonian $H = \sum_k c_k P_k$ where $P_k \in \{I, X, Y, Z\}^{\otimes n}$ are Pauli strings and $c_k \in \mathbb{R}$, VQE prepares a parameterized ansatz $|\psi(\boldsymbol{\theta})\rangle = U(\boldsymbol{\theta}) |0\rangle^{\otimes n}$.
+By the Rayleigh-Ritz variational principle:
+$$E(\boldsymbol{\theta}) = \langle \psi(\boldsymbol{\theta}) | H | \psi(\boldsymbol{\theta})\rangle = \frac{\langle \psi(\boldsymbol{\theta}) | H | \psi(\boldsymbol{\theta})\rangle}{\langle \psi(\boldsymbol{\theta}) | \psi(\boldsymbol{\theta})\rangle} \ge E_0$$
+where $E_0$ is the exact ground-state eigenvalue. Equality holds if and only if $|\psi(\boldsymbol{\theta})\rangle$ spans the ground eigenspace.
+
+### 7.2 Quantum Natural Gradient (QNG)
+Standard Euclidean gradient descent treats parameter space $\mathbb{R}^d$ as flat, but the space of quantum states is Riemannian, equipped with the Fubini-Study metric tensor:
+$$g_{ij}(\boldsymbol{\theta}) = \text{Re}\left( \langle \partial_i \psi(\boldsymbol{\theta}) | \partial_j \psi(\boldsymbol{\theta}) \rangle - \langle \partial_i \psi(\boldsymbol{\theta}) | \psi(\boldsymbol{\theta}) \rangle \langle \psi(\boldsymbol{\theta}) | \partial_j \psi(\boldsymbol{\theta}) \rangle \right)$$
+The Quantum Natural Gradient step follows the steepest descent along the quantum state manifold:
+$$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta \, (g(\boldsymbol{\theta}_t) + \lambda I)^{-1} \nabla E(\boldsymbol{\theta}_t)$$
+where $\lambda > 0$ provides Tikhonov regularization ensuring numerical invertibility of singular or near-singular metrics.
+- **Block-Diagonal Approximation:** Restricts $g$ to diagonal parameter blocks corresponding to independent layers or single-qubit gates, computing generator variances under previous-layer states.
+- **Circuit Evaluation Cost:** Measuring the metric tensor on quantum hardware or simulators requires extra circuit evaluations (or state-overlap measurements) beyond the $2d$ evaluations of parameter-shift gradient.
+
+---
+
+## 8. Parameterized Quantum Circuit (PQC) / QNN with Data Re-Uploading
+
+For classification, classical data $\boldsymbol{x} \in \mathbb{R}^m$ is mapped into quantum states using data re-uploading (Pérez-Salinas et al., 2020). By interleaving data encoding rotations $R(\boldsymbol{x})$ and trainable variational rotations $R(\boldsymbol{\theta})$ across multiple layers:
+$$U(\boldsymbol{x}, \boldsymbol{\theta}) = \prod_{l=1}^L \left( U_{\text{train}}(\boldsymbol{\theta}_l) \, U_{\text{CNOT}} \, U_{\text{encode}}(\boldsymbol{x}) \right)$$
+the circuit acts as a universal quantum function approximator where frequency spectra expand with depth $L$, outputting class prediction $\hat{y}(\boldsymbol{x}) = \langle Z_0 \rangle \in [-1, 1]$.
+
+---
+
+## 9. Barren Plateaus & Cost Function Locality
+
+In deep, randomly initialized parameterized quantum circuits (McClean et al., 2018), gradient components concentrate sharply around zero:
+$$\mathbb{E}_{\boldsymbol{\theta}}[\partial_i E] = 0, \qquad \text{Var}_{\boldsymbol{\theta}}(\partial_i E) \in \mathcal{O}\left(\frac{1}{2^n}\right)$$
+- **Global Cost Functions:** For global observables such as projectors onto pure states $C_{\text{global}} = I - |0\dots 0\rangle \langle 0\dots 0|$, the variance decays exponentially in the number of qubits $n$ for depth $\Omega(n)$ (forming approximate 2-designs), creating untrainable barren plateaus.
+- **Local Cost Functions:** For local observables measuring individual qubits $C_{\text{local}} = \frac{I - Z_0}{2}$, the variance decays only polynomially at shallow depths $\mathcal{O}(\log n)$, preserving trainability.
+
