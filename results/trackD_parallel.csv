@@ -1,0 +1,26 @@
+experiment,procs,metric,value,type,strategy,makespan_s,speedup,imbalance,sim_makespan_s,steals,efficiency,throughput_par,threads
+part_a_strong_scaling,1.0,speedup,1.0,measured,,,,,,,,,
+part_a_strong_scaling,2.0,speedup,1.2320683577291047,measured,,,,,,,,,
+part_a_strong_scaling,4.0,speedup,1.9852265800035052,measured,,,,,,,,,
+part_a_strong_scaling,8.0,speedup,2.214701233774733,measured,,,,,,,,,
+part_a_strong_scaling,12.0,speedup,3.261558108742538,measured,,,,,,,,,
+part_a_gustafson_scaling,1.0,scaled_speedup,1.2096049555053026,measured,,,,,,,,,
+part_a_gustafson_scaling,2.0,scaled_speedup,2.1829126759407416,measured,,,,,,,,,
+part_a_gustafson_scaling,4.0,scaled_speedup,3.0179373081187637,measured,,,,,,,,,
+part_a_gustafson_scaling,8.0,scaled_speedup,4.2323578461307605,measured,,,,,,,,,
+part_a_gustafson_scaling,12.0,scaled_speedup,4.408479449169054,measured,,,,,,,,,
+part_c_load_balancing,,,,measured,Static Equal Split,9.839403800016347,1.5607738956670774,1.1226727041174842,,,,,
+part_c_load_balancing,,,,measured,Static LPT,9.531384833341386,1.611212312640332,1.032814353161782,,,,,
+part_c_load_balancing,,,,measured,Dynamic Queue,9.519890666667683,1.61315766511513,1.0069784175109617,,,,,
+part_d_work_stealing_simulation,2.0,,,simulated,,,,,7.875978299911367,1.0,,,
+part_d_work_stealing_simulation,4.0,,,simulated,,,,,3.899460500018904,7.0,,,
+part_d_work_stealing_simulation,8.0,,,simulated,,,,,2.173599999921862,9.0,,,
+part_d_work_stealing_simulation,16.0,,,simulated,,,,,1.2762225999613293,12.0,,,
+part_d_work_stealing_simulation,32.0,,,simulated,,,,,0.9445590999675915,12.0,,,
+part_e_data_parallelism,1.0,,,measured,,,1.6910743189400657,,,,1.6910743189400657,,
+part_e_data_parallelism,2.0,,,measured,,,2.113917989362778,,,,1.056958994681389,,
+part_e_data_parallelism,4.0,,,measured,,,2.695449529096952,,,,0.673862382274238,,
+part_f_pipeline,3.0,,,measured,,,1.1321318423538442,,,,,20.383531846965322,
+part_g_model_parallelism,,,,measured,,,0.9290662972084794,,,,,,1.0
+part_g_model_parallelism,,,,measured,,,1.6297893485702428,,,,,,2.0
+part_g_model_parallelism,,,,measured,,,2.8750538688250584,,,,,,4.0

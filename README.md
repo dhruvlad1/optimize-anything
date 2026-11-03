@@ -99,6 +99,42 @@ python -m pytest trackC_quantum_opt -q
 
 ### Outputs
 
+- `results/trackC_qaoa.csv` & `results/trackC_qaoa_p_sweep.png`
+- `results/trackC_shots.csv` & `results/trackC_shots_opt.csv`
+- `results/trackC_noise.csv` & `results/trackC_noise_decay.png`
+- `results/trackC_vqe.csv` & `results/trackC_vqe_convergence.png`
+- `results/trackC_qnn.csv` & `results/trackC_qnn_boundary.png`
+- `results/trackC_barren.csv` & `results/trackC_barren_variance.png`
+
+## Track D: Submodular & Parallel Optimization (Part 1 of 2)
+
+Covers submodular facility location maximization (greedy, lazy greedy heap, ILP via OR-Tools SCIP, brute force), mathematical submodularity checks, and parallel computing benchmarks (strong/weak scaling, Amdahl/Gustafson fitting, Karp-Flatt metric, load balancing, work-stealing discrete-event simulation, persistent-worker data parallelism, queue-based pipeline parallelism, and column-sharded multithreaded model parallelism).
+
+### Usage
+
+```powershell
+# 1. Submodular facility location benchmark (exact vs ILP vs greedy vs lazy greedy)
+python -m trackD_parallel.exp1_submodular
+
+# Quick mode for fast smoke check
+python -m trackD_parallel.exp1_submodular --quick
+
+# 2. Parallel computing benchmarks (scaling laws, overhead, load balance, data/pipe/model parallelism)
+# Note: Prints estimated runtime before executing.
+python -m trackD_parallel.exp2_parallel
+
+# Quick mode for fast run
+python -m trackD_parallel.exp2_parallel --quick
+
+# 3. Pytest test suite for Track D (submodular algorithms, ILP, laws, work stealing)
+python -m pytest trackD_parallel -q
+```
+
+### Outputs
+
+- `results/trackD_submodular.csv` & `results/trackD_submodular_analysis.png`
+- `results/trackD_parallel.csv` & `results/trackD_parallel_scaling.png`
+
 | File | Description |
 |------|-------------|
 | `results/trackC_qaoa.csv` | QAOA depth sweep records across instances, depths, and optimizers |
