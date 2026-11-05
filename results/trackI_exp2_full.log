@@ -1,0 +1,141 @@
+Qiskit version: 2.6.1
+Qiskit Aer version: 0.18.2
+Inspected API transpile(circuits: ~_CircuitT, backend: qiskit.providers.backend.Backend | None = None, basis_gates: list[str] | None = None, coupling_map: qiskit.transpiler.coupling.CouplingMap | list[list[int]] | None = None, initial_layout: qiskit.transpiler.layout.Layout | dict | list | None = None, layout_method: str | None = None, routing_method: str | None = None, translation_method: str | None = None, scheduling_method: str | None = None, dt: float | None = None, approximation_degree: float | None = 1.0, seed_transpiler: int | None = None, optimization_level: int | None = None, callback: collections.abc.Callable[[qiskit.transpiler.basepasses.BasePass, qiskit._accelerate.circuit.DAGCircuit, float, qiskit.passmanager.compilation_status.PropertySet, int], typing.Any] | None = None, output_name: str | list[str] | None = None, unitary_synthesis_method: str = 'default', unitary_synthesis_plugin_config: dict | None = None, target: qiskit.transpiler.target.Target | None = None, hls_config: qiskit.transpiler.passes.synthesis.high_level_synthesis.HLSConfig | None = None, init_method: str | None = None, optimization_method: str | None = None, ignore_backend_supplied_default_methods: bool = False, num_processes: int | None = None, qubits_initially_zero: bool = True) -> ~_CircuitT
+Inspected API QuantumCircuit.mcx(self, control_qubits: 'Sequence[QubitSpecifier]', target_qubit: 'QubitSpecifier', ancilla_qubits: 'QubitSpecifier | Sequence[QubitSpecifier] | None' = None, mode: 'str | None' = None, ctrl_state: 'str | int | None' = None, label: 'str | None' = None) -> 'InstructionSet'
+Inspected API QuantumCircuit.cp(self, theta: 'ParameterValueType', control_qubit: 'QubitSpecifier', target_qubit: 'QubitSpecifier', label: 'str | None' = None, ctrl_state: 'str | int | None' = None) -> 'InstructionSet'
+Inspected API QuantumCircuit.measure_all(self, inplace: 'bool' = True, add_bits: 'bool' = True) -> 'QuantumCircuit | None'
+Inspected API QuantumCircuit.append(self, instruction: 'Operation | CircuitInstruction', qargs: 'Sequence[QubitSpecifier] | None' = None, cargs: 'Sequence[ClbitSpecifier] | None' = None, *, copy: 'bool' = True) -> 'InstructionSet'
+Inspected API Gate.control(self, num_ctrl_qubits: 'int' = 1, label: 'str | None' = None, ctrl_state: 'int | str | None' = None, annotated: 'bool | None' = None)
+Inspected API Statevector.from_instruction(instruction: 'Instruction | QuantumCircuit') -> 'Statevector'
+Inspected API AerSimulator(configuration=None, properties=None, provider=None, target=None, **backend_options)
+Inspected API NoiseModel.add_all_qubit_quantum_error(self, error, instructions, warnings=True)
+Inspected API depolarizing_error(param, num_qubits)
+Inspected JSON: list[15], record keys=['edges', 'instance_id', 'n', 'optimal_assignment', 'optimal_cut_value', 'seed'], n sizes=[10, 12, 14].
+Estimated runtime: 420s; instances=5, 400 steps per T; --quick limits to one instance and three T values.
+maxcut_n10_seed0: minimum relevant + parity-sector gap 0 at s=1.0000 (SIMULATED)
+  optimal ground assignments=6; cost minimum verified as -39.
+  progress maxcut_n10_seed0 T=1: p_ground=0.00647 (0.85s)
+  progress maxcut_n10_seed0 T=2: p_ground=0.00761 (0.70s)
+  progress maxcut_n10_seed0 T=5: p_ground=0.00951 (0.74s)
+  progress maxcut_n10_seed0 T=10: p_ground=0.01209 (0.93s)
+  progress maxcut_n10_seed0 T=20: p_ground=0.01670 (0.91s)
+  progress maxcut_n10_seed0 T=50: p_ground=0.02945 (1.03s)
+  progress maxcut_n10_seed0 T=100: p_ground=0.05053 (1.05s)
+  progress maxcut_n10_seed0 T=200: p_ground=0.09340 (1.29s)
+  convergence T=10: 400 steps=0.0120863, 800 steps=0.0120862, difference=1.64e-07
+  convergence T=100: 400 steps=0.0505337, 800 steps=0.0505237, difference=9.93e-06
+maxcut_n10_seed1: minimum relevant + parity-sector gap 0 at s=1.0000 (SIMULATED)
+  optimal ground assignments=4; cost minimum verified as -60.
+  progress maxcut_n10_seed1 T=1: p_ground=0.00432 (0.79s)
+  progress maxcut_n10_seed1 T=2: p_ground=0.00509 (0.80s)
+  progress maxcut_n10_seed1 T=5: p_ground=0.00641 (0.84s)
+  progress maxcut_n10_seed1 T=10: p_ground=0.00825 (0.87s)
+  progress maxcut_n10_seed1 T=20: p_ground=0.01165 (0.85s)
+  progress maxcut_n10_seed1 T=50: p_ground=0.02187 (0.88s)
+  progress maxcut_n10_seed1 T=100: p_ground=0.04102 (1.12s)
+  progress maxcut_n10_seed1 T=200: p_ground=0.08775 (1.28s)
+  convergence T=10: 400 steps=0.0082464, 800 steps=0.0082463, difference=1.16e-07
+  convergence T=100: 400 steps=0.0410189, 800 steps=0.0410097, difference=9.22e-06
+maxcut_n10_seed2: minimum relevant + parity-sector gap 0.0212766 at s=1.0000 (SIMULATED)
+  optimal ground assignments=2; cost minimum verified as -47.
+  progress maxcut_n10_seed2 T=1: p_ground=0.00217 (0.60s)
+  progress maxcut_n10_seed2 T=2: p_ground=0.00257 (0.68s)
+  progress maxcut_n10_seed2 T=5: p_ground=0.00325 (0.79s)
+  progress maxcut_n10_seed2 T=10: p_ground=0.00419 (0.77s)
+  progress maxcut_n10_seed2 T=20: p_ground=0.00591 (0.83s)
+  progress maxcut_n10_seed2 T=50: p_ground=0.01084 (0.99s)
+  progress maxcut_n10_seed2 T=100: p_ground=0.01942 (1.11s)
+  progress maxcut_n10_seed2 T=200: p_ground=0.03828 (1.37s)
+  convergence T=10: 400 steps=0.0041877, 800 steps=0.0041877, difference=6.20e-08
+  convergence T=100: 400 steps=0.0194249, 800 steps=0.0194205, difference=4.44e-06
+maxcut_n10_seed3: minimum relevant + parity-sector gap 0.00974557 at s=0.9799 (SIMULATED)
+  optimal ground assignments=2; cost minimum verified as -50.
+  progress maxcut_n10_seed3 T=1: p_ground=0.00218 (0.73s)
+  progress maxcut_n10_seed3 T=2: p_ground=0.00260 (0.77s)
+  progress maxcut_n10_seed3 T=5: p_ground=0.00334 (0.71s)
+  progress maxcut_n10_seed3 T=10: p_ground=0.00438 (0.74s)
+  progress maxcut_n10_seed3 T=20: p_ground=0.00635 (0.82s)
+  progress maxcut_n10_seed3 T=50: p_ground=0.01239 (0.99s)
+  progress maxcut_n10_seed3 T=100: p_ground=0.02384 (1.04s)
+  progress maxcut_n10_seed3 T=200: p_ground=0.05141 (1.39s)
+  convergence T=10: 400 steps=0.0043820, 800 steps=0.0043819, difference=6.47e-08
+  convergence T=100: 400 steps=0.0238388, 800 steps=0.0238336, difference=5.18e-06
+maxcut_n10_seed4: minimum relevant + parity-sector gap 0.0212766 at s=1.0000 (SIMULATED)
+  optimal ground assignments=2; cost minimum verified as -47.
+  progress maxcut_n10_seed4 T=1: p_ground=0.00218 (0.80s)
+  progress maxcut_n10_seed4 T=2: p_ground=0.00260 (0.80s)
+  progress maxcut_n10_seed4 T=5: p_ground=0.00334 (0.74s)
+  progress maxcut_n10_seed4 T=10: p_ground=0.00439 (0.91s)
+  progress maxcut_n10_seed4 T=20: p_ground=0.00637 (0.87s)
+  progress maxcut_n10_seed4 T=50: p_ground=0.01252 (0.98s)
+  progress maxcut_n10_seed4 T=100: p_ground=0.02450 (0.81s)
+  progress maxcut_n10_seed4 T=200: p_ground=0.05495 (0.91s)
+  convergence T=10: 400 steps=0.0043922, 800 steps=0.0043921, difference=6.31e-08
+  convergence T=100: 400 steps=0.0244968, 800 steps=0.0244917, difference=5.05e-06
+
+Annealing dynamics table (each row labeled)
+    label      instance_id  n   T  steps  success_probability  gap_min  s_at_gap  simulation_seconds                theory_gap_scale
+SIMULATED maxcut_n10_seed0 10   1    400             0.006467 0.000000  1.000000            0.848761 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed0 10   2    400             0.007606 0.000000  1.000000            0.704284 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed0 10   5    400             0.009510 0.000000  1.000000            0.744760 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed0 10  10    400             0.012086 0.000000  1.000000            0.928103 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed0 10  20    400             0.016704 0.000000  1.000000            0.908634 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed0 10  50    400             0.029455 0.000000  1.000000            1.029364 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed0 10 100    400             0.050534 0.000000  1.000000            1.051388 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed0 10 200    400             0.093405 0.000000  1.000000            1.288423 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed1 10   1    400             0.004317 0.000000  1.000000            0.794588 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed1 10   2    400             0.005091 0.000000  1.000000            0.800819 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed1 10   5    400             0.006410 0.000000  1.000000            0.843710 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed1 10  10    400             0.008246 0.000000  1.000000            0.868404 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed1 10  20    400             0.011654 0.000000  1.000000            0.850589 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed1 10  50    400             0.021869 0.000000  1.000000            0.877960 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed1 10 100    400             0.041019 0.000000  1.000000            1.117121 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed1 10 200    400             0.087753 0.000000  1.000000            1.276772 infinite (zero finite-grid gap)
+SIMULATED maxcut_n10_seed2 10   1    400             0.002166 0.021277  1.000000            0.602886               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed2 10   2    400             0.002569 0.021277  1.000000            0.684231               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed2 10   5    400             0.003251 0.021277  1.000000            0.794060               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed2 10  10    400             0.004188 0.021277  1.000000            0.765758               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed2 10  20    400             0.005907 0.021277  1.000000            0.828819               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed2 10  50    400             0.010838 0.021277  1.000000            0.994294               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed2 10 100    400             0.019425 0.021277  1.000000            1.108980               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed2 10 200    400             0.038276 0.021277  1.000000            1.367031               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed3 10   1    400             0.002176 0.009746  0.979899            0.725001              THEORETICAL: 10529
+SIMULATED maxcut_n10_seed3 10   2    400             0.002601 0.009746  0.979899            0.766323              THEORETICAL: 10529
+SIMULATED maxcut_n10_seed3 10   5    400             0.003337 0.009746  0.979899            0.710623              THEORETICAL: 10529
+SIMULATED maxcut_n10_seed3 10  10    400             0.004382 0.009746  0.979899            0.744415              THEORETICAL: 10529
+SIMULATED maxcut_n10_seed3 10  20    400             0.006353 0.009746  0.979899            0.823915              THEORETICAL: 10529
+SIMULATED maxcut_n10_seed3 10  50    400             0.012391 0.009746  0.979899            0.989903              THEORETICAL: 10529
+SIMULATED maxcut_n10_seed3 10 100    400             0.023839 0.009746  0.979899            1.043436              THEORETICAL: 10529
+SIMULATED maxcut_n10_seed3 10 200    400             0.051414 0.009746  0.979899            1.394341              THEORETICAL: 10529
+SIMULATED maxcut_n10_seed4 10   1    400             0.002178 0.021277  1.000000            0.796004               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed4 10   2    400             0.002603 0.021277  1.000000            0.795771               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed4 10   5    400             0.003341 0.021277  1.000000            0.735884               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed4 10  10    400             0.004392 0.021277  1.000000            0.907340               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed4 10  20    400             0.006374 0.021277  1.000000            0.867565               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed4 10  50    400             0.012523 0.021277  1.000000            0.984441               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed4 10 100    400             0.024497 0.021277  1.000000            0.812744               THEORETICAL: 2209
+SIMULATED maxcut_n10_seed4 10 200    400             0.054949 0.021277  1.000000            0.913871               THEORETICAL: 2209
+maxcut_n10_seed0: smallest sampled T with success >=0.9: none in sweep; compare THEORETICAL 1/gap_min^2=infinite because gap_min=0.
+maxcut_n10_seed1: smallest sampled T with success >=0.9: none in sweep; compare THEORETICAL 1/gap_min^2=infinite because gap_min=0.
+maxcut_n10_seed2: smallest sampled T with success >=0.9: none in sweep; compare THEORETICAL 1/gap_min^2=2209.
+maxcut_n10_seed3: smallest sampled T with success >=0.9: none in sweep; compare THEORETICAL 1/gap_min^2=1.053e+04.
+maxcut_n10_seed4: smallest sampled T with success >=0.9: none in sweep; compare THEORETICAL 1/gap_min^2=2209.
+
+Embedding lower bounds (degree counts only; actual embeddings need more; no annealing hardware)
+      label      instance_id  n              logical_degrees  chimera_physical_qubit_lower_bound  pegasus_physical_qubit_lower_bound
+THEORETICAL maxcut_n10_seed0 10          5,2,1,4,4,5,6,2,5,4                                  10                                  10
+THEORETICAL maxcut_n10_seed1 10          5,6,4,6,8,5,7,6,3,6                                  12                                  10
+THEORETICAL maxcut_n10_seed2 10          3,3,6,4,6,4,4,2,4,2                                  10                                  10
+THEORETICAL maxcut_n10_seed3 10          5,5,2,4,4,3,4,6,2,5                                  10                                  10
+THEORETICAL maxcut_n10_seed4 10          6,6,4,3,4,6,6,2,1,4                                  10                                  10
+THEORETICAL maxcut_n12_seed0 12      5,3,3,6,6,2,7,5,5,4,2,4                                  13                                  12
+THEORETICAL maxcut_n12_seed1 12      6,7,8,6,6,6,4,6,5,7,5,6                                  15                                  12
+THEORETICAL maxcut_n12_seed2 12      3,6,7,6,5,5,3,1,3,6,6,5                                  13                                  12
+THEORETICAL maxcut_n12_seed3 12      6,4,5,5,5,3,7,3,3,3,4,4                                  13                                  12
+THEORETICAL maxcut_n12_seed4 12      7,7,4,5,6,7,5,4,6,5,4,8                                  16                                  12
+THEORETICAL maxcut_n14_seed0 14  6,3,5,7,8,3,4,6,4,6,3,4,4,5                                  16                                  14
+THEORETICAL maxcut_n14_seed1 14 7,8,12,5,4,7,6,6,7,8,7,4,5,4                                  22                                  14
+THEORETICAL maxcut_n14_seed2 14 5,8,6,3,4,3,5,4,6,6,6,4,4,10                                  16                                  14
+THEORETICAL maxcut_n14_seed3 14  7,5,5,8,2,5,6,6,4,5,7,4,6,6                                  17                                  14
+THEORETICAL maxcut_n14_seed4 14  9,5,7,7,6,7,6,8,5,8,5,7,6,8                                  22                                  14
+Saved D:\projects\optimize-anything\results\trackI_annealing.csv and plots.

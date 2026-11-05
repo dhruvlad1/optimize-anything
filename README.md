@@ -284,6 +284,19 @@ Results are written to:
 - `results/trackH_latency_vs_budget.png` — latency vs storage budget trade-off curves
 - `results/trackH_environment.json` — PostgreSQL version and settings
 
+## Track I: Quantum Algorithms on Simulators
+
+All quantum runs are classical simulations; no real quantum hardware is used.
+
+```powershell
+python -m trackI_quantum_algos.exp1_algorithms
+python -m trackI_quantum_algos.exp2_annealing
+python -m trackI_quantum_algos.exp3_noise
+python -m pytest trackI_quantum_algos -q
+```
+
+Use `--quick` with any experiment to run its reduced smoke configuration. Results are written to `results/trackI_*.csv` and PNG plots.
+
 ## Commit Convention
 
 All repository commits follow a standardized prefix convention to clearly distinguish AI-assisted generation from manual work:

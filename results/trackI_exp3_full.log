@@ -1,0 +1,85 @@
+SIMULATED NOISE MODEL: depolarizing errors only; no readout error or relaxation; no real hardware.
+Qiskit version: 2.6.1
+Qiskit Aer version: 0.18.2
+Inspected API transpile(circuits: ~_CircuitT, backend: qiskit.providers.backend.Backend | None = None, basis_gates: list[str] | None = None, coupling_map: qiskit.transpiler.coupling.CouplingMap | list[list[int]] | None = None, initial_layout: qiskit.transpiler.layout.Layout | dict | list | None = None, layout_method: str | None = None, routing_method: str | None = None, translation_method: str | None = None, scheduling_method: str | None = None, dt: float | None = None, approximation_degree: float | None = 1.0, seed_transpiler: int | None = None, optimization_level: int | None = None, callback: collections.abc.Callable[[qiskit.transpiler.basepasses.BasePass, qiskit._accelerate.circuit.DAGCircuit, float, qiskit.passmanager.compilation_status.PropertySet, int], typing.Any] | None = None, output_name: str | list[str] | None = None, unitary_synthesis_method: str = 'default', unitary_synthesis_plugin_config: dict | None = None, target: qiskit.transpiler.target.Target | None = None, hls_config: qiskit.transpiler.passes.synthesis.high_level_synthesis.HLSConfig | None = None, init_method: str | None = None, optimization_method: str | None = None, ignore_backend_supplied_default_methods: bool = False, num_processes: int | None = None, qubits_initially_zero: bool = True) -> ~_CircuitT
+Inspected API QuantumCircuit.mcx(self, control_qubits: 'Sequence[QubitSpecifier]', target_qubit: 'QubitSpecifier', ancilla_qubits: 'QubitSpecifier | Sequence[QubitSpecifier] | None' = None, mode: 'str | None' = None, ctrl_state: 'str | int | None' = None, label: 'str | None' = None) -> 'InstructionSet'
+Inspected API QuantumCircuit.cp(self, theta: 'ParameterValueType', control_qubit: 'QubitSpecifier', target_qubit: 'QubitSpecifier', label: 'str | None' = None, ctrl_state: 'str | int | None' = None) -> 'InstructionSet'
+Inspected API QuantumCircuit.measure_all(self, inplace: 'bool' = True, add_bits: 'bool' = True) -> 'QuantumCircuit | None'
+Inspected API QuantumCircuit.append(self, instruction: 'Operation | CircuitInstruction', qargs: 'Sequence[QubitSpecifier] | None' = None, cargs: 'Sequence[ClbitSpecifier] | None' = None, *, copy: 'bool' = True) -> 'InstructionSet'
+Inspected API Gate.control(self, num_ctrl_qubits: 'int' = 1, label: 'str | None' = None, ctrl_state: 'int | str | None' = None, annotated: 'bool | None' = None)
+Inspected API Statevector.from_instruction(instruction: 'Instruction | QuantumCircuit') -> 'Statevector'
+Inspected API AerSimulator(configuration=None, properties=None, provider=None, target=None, **backend_options)
+Inspected API NoiseModel.add_all_qubit_quantum_error(self, error, instructions, warnings=True)
+Inspected API depolarizing_error(param, num_qubits)
+Estimated runtime: 110s; shots=4096, repetitions=5, p values=[0, 0.0001, 0.001, 0.003, 0.01, 0.02].
+progress DJ n=3, p=0: success=1.0000 +/- 0.0000, depth=111, cx=56
+progress DJ n=3, p=0.0001: success=0.9923 +/- 0.0011, depth=111, cx=56
+progress DJ n=3, p=0.001: success=0.9418 +/- 0.0031, depth=111, cx=56
+progress DJ n=3, p=0.003: success=0.8918 +/- 0.0043, depth=111, cx=56
+progress DJ n=3, p=0.01: success=0.8721 +/- 0.0034, depth=111, cx=56
+progress DJ n=3, p=0.02: success=0.8774 +/- 0.0034, depth=111, cx=56
+progress BV n=4, p=0: success=1.0000 +/- 0.0000, depth=10, cx=3
+progress BV n=4, p=0.0001: success=0.9970 +/- 0.0005, depth=10, cx=3
+progress BV n=4, p=0.001: success=0.9702 +/- 0.0025, depth=10, cx=3
+progress BV n=4, p=0.003: success=0.9141 +/- 0.0036, depth=10, cx=3
+progress BV n=4, p=0.01: success=0.7353 +/- 0.0057, depth=10, cx=3
+progress BV n=4, p=0.02: success=0.5499 +/- 0.0061, depth=10, cx=3
+progress Grover n=3 k=2, p=0: success=0.9451 +/- 0.0022, depth=56, cx=24
+progress Grover n=3 k=2, p=0.0001: success=0.9258 +/- 0.0015, depth=56, cx=24
+progress Grover n=3 k=2, p=0.001: success=0.7502 +/- 0.0062, depth=56, cx=24
+progress Grover n=3 k=2, p=0.003: success=0.4966 +/- 0.0068, depth=56, cx=24
+progress Grover n=3 k=2, p=0.01: success=0.1799 +/- 0.0061, depth=56, cx=24
+progress Grover n=3 k=2, p=0.02: success=0.1286 +/- 0.0050, depth=56, cx=24
+progress Grover n=4 k=3, p=0: success=0.9611 +/- 0.0020, depth=172, cx=84
+progress Grover n=4 k=3, p=0.0001: success=0.8930 +/- 0.0037, depth=172, cx=84
+progress Grover n=4 k=3, p=0.001: success=0.4609 +/- 0.0093, depth=172, cx=84
+progress Grover n=4 k=3, p=0.003: success=0.1477 +/- 0.0040, depth=172, cx=84
+progress Grover n=4 k=3, p=0.01: success=0.0624 +/- 0.0022, depth=172, cx=84
+progress Grover n=4 k=3, p=0.02: success=0.0622 +/- 0.0034, depth=172, cx=84
+progress QPE t=4 phi=3/8, p=0: success=1.0000 +/- 0.0000, depth=47, cx=26
+progress QPE t=4 phi=3/8, p=0.0001: success=0.9789 +/- 0.0015, depth=47, cx=26
+progress QPE t=4 phi=3/8, p=0.001: success=0.8119 +/- 0.0036, depth=47, cx=26
+progress QPE t=4 phi=3/8, p=0.003: success=0.5476 +/- 0.0050, depth=47, cx=26
+progress QPE t=4 phi=3/8, p=0.01: success=0.1727 +/- 0.0078, depth=47, cx=26
+progress QPE t=4 phi=3/8, p=0.02: success=0.0762 +/- 0.0041, depth=47, cx=26
+
+Noise results table (every row labeled SIMULATED)
+    label         circuit      p  shots  repetitions  success_mean  success_std  noiseless_success  depth  cx_count
+SIMULATED          DJ n=3 0.0000   4096            5      1.000000     0.000000           1.000000    111        56
+SIMULATED          DJ n=3 0.0001   4096            5      0.992285     0.001086           1.000000    111        56
+SIMULATED          DJ n=3 0.0010   4096            5      0.941846     0.003095           1.000000    111        56
+SIMULATED          DJ n=3 0.0030   4096            5      0.891797     0.004324           1.000000    111        56
+SIMULATED          DJ n=3 0.0100   4096            5      0.872070     0.003396           1.000000    111        56
+SIMULATED          DJ n=3 0.0200   4096            5      0.877441     0.003418           1.000000    111        56
+SIMULATED          BV n=4 0.0000   4096            5      1.000000     0.000000           1.000000     10         3
+SIMULATED          BV n=4 0.0001   4096            5      0.997021     0.000470           1.000000     10         3
+SIMULATED          BV n=4 0.0010   4096            5      0.970166     0.002540           1.000000     10         3
+SIMULATED          BV n=4 0.0030   4096            5      0.914062     0.003592           1.000000     10         3
+SIMULATED          BV n=4 0.0100   4096            5      0.735254     0.005654           1.000000     10         3
+SIMULATED          BV n=4 0.0200   4096            5      0.549902     0.006137           1.000000     10         3
+SIMULATED  Grover n=3 k=2 0.0000   4096            5      0.945068     0.002244           0.945313     56        24
+SIMULATED  Grover n=3 k=2 0.0001   4096            5      0.925781     0.001525           0.945313     56        24
+SIMULATED  Grover n=3 k=2 0.0010   4096            5      0.750195     0.006218           0.945313     56        24
+SIMULATED  Grover n=3 k=2 0.0030   4096            5      0.496582     0.006775           0.945313     56        24
+SIMULATED  Grover n=3 k=2 0.0100   4096            5      0.179883     0.006134           0.945313     56        24
+SIMULATED  Grover n=3 k=2 0.0200   4096            5      0.128613     0.005046           0.945313     56        24
+SIMULATED  Grover n=4 k=3 0.0000   4096            5      0.961084     0.002040           0.961319    172        84
+SIMULATED  Grover n=4 k=3 0.0001   4096            5      0.893018     0.003696           0.961319    172        84
+SIMULATED  Grover n=4 k=3 0.0010   4096            5      0.460889     0.009281           0.961319    172        84
+SIMULATED  Grover n=4 k=3 0.0030   4096            5      0.147705     0.004030           0.961319    172        84
+SIMULATED  Grover n=4 k=3 0.0100   4096            5      0.062402     0.002242           0.961319    172        84
+SIMULATED  Grover n=4 k=3 0.0200   4096            5      0.062207     0.003389           0.961319    172        84
+SIMULATED QPE t=4 phi=3/8 0.0000   4096            5      1.000000     0.000000           1.000000     47        26
+SIMULATED QPE t=4 phi=3/8 0.0001   4096            5      0.978857     0.001550           1.000000     47        26
+SIMULATED QPE t=4 phi=3/8 0.0010   4096            5      0.811914     0.003566           1.000000     47        26
+SIMULATED QPE t=4 phi=3/8 0.0030   4096            5      0.547559     0.005002           1.000000     47        26
+SIMULATED QPE t=4 phi=3/8 0.0100   4096            5      0.172705     0.007848           1.000000     47        26
+SIMULATED QPE t=4 phi=3/8 0.0200   4096            5      0.076172     0.004067           1.000000     47        26
+
+Interpolated p thresholds at 50% of noiseless success (interpolation between measured p grid points)
+BV n=4: threshold=not crossed (SIMULATED interpolation)
+DJ n=3: threshold=not crossed (SIMULATED interpolation)
+Grover n=3 k=2: threshold=0.00352883 (SIMULATED interpolation)
+Grover n=4 k=3: threshold=0.000958823 (SIMULATED interpolation)
+QPE t=4 phi=3/8: threshold=0.00388811 (SIMULATED interpolation)
+Saved D:\projects\optimize-anything\results\trackI_noise.csv and plot. Noise model excludes readout error and relaxation.
