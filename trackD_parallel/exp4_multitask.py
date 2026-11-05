@@ -21,6 +21,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 RESULTS.mkdir(exist_ok=True)
@@ -36,6 +39,7 @@ from trackD_parallel.multitask import (
     gradnorm_step,
     train,
     _task_grads_shared,
+    _task_grads_shared_all,
 )
 
 
@@ -52,9 +56,9 @@ def estimate_runtime() -> float:
         backprop(params, X, y1, y2, (1.0, 1.0))
     t_step = (time.perf_counter() - t0) / 50
 
-    # 3 methods x 3 lr x 5 seeds x 500 steps
+    # 3 methods x 3 lr x 5 seeds x 500 steps; include method-specific work.
     n_runs = 3 * 3 * 5 * 500
-    return n_runs * t_step
+    return n_runs * t_step * 5.0
 
 
 # ---------------------------------------------------------------------------
@@ -73,7 +77,7 @@ def part_a() -> None:
     cos_sims = []
     for seed in range(n_samples):
         params = init_params(d_in=10, hidden=8, seed=seed)
-        g1, g2 = _task_grads_shared(params, X, y1, y2)
+        g1, g2 = _task_grads_shared_all(params, X, y1, y2)
         n1, n2 = np.linalg.norm(g1), np.linalg.norm(g2)
         cos = float(np.dot(g1, g2) / (n1 * n2 + 1e-30))
         cos_sims.append(cos)
@@ -125,7 +129,9 @@ def part_b() -> pd.DataFrame:
                 mean_alpha = float(np.nanmean(hist["alpha"])) if method == "mgda" else float("nan")
                 mean_w1 = float(np.nanmean(hist["w1"])) if method == "gradnorm" else float("nan")
                 mean_w2 = float(np.nanmean(hist["w2"])) if method == "gradnorm" else float("nan")
-                conflict_frac = float(np.mean(np.array(hist["cosine_sim"]) < 0)) if method == "mgda" else float("nan")
+                conflict_frac = float(np.mean(np.array(hist["cosine_sim"]) < 0))
+                inc1 = float(np.mean(np.diff(hist["L1"]) > 0))
+                inc2 = float(np.mean(np.diff(hist["L2"]) > 0))
 
                 records.append({
                     "method": method,
@@ -143,6 +149,10 @@ def part_b() -> pd.DataFrame:
                     "mean_w1": mean_w1,
                     "mean_w2": mean_w2,
                     "conflict_frac": conflict_frac,
+                    "task1_increase_frac": inc1,
+                    "task2_increase_frac": inc2,
+                    "mean_norm1": float(np.mean(hist["norm1"])),
+                    "mean_norm2": float(np.mean(hist["norm2"])),
                 })
                 elapsed = time.perf_counter() - t_start
                 print(f"  {method:8s} lr={lr:.3f} seed={seed} | "
@@ -164,6 +174,7 @@ def part_c() -> None:
     rng = np.random.default_rng(42)
     n_checks = 50
     violations = 0
+    min_inner = float("inf")
 
     for i in range(n_checks):
         d = 20
@@ -178,6 +189,7 @@ def part_c() -> None:
         # Check non-negative inner product with both gradients
         inner1 = float(np.dot(d_star, g1))
         inner2 = float(np.dot(d_star, g2))
+        min_inner = min(min_inner, inner1, inner2)
         if inner1 < -1e-12 or inner2 < -1e-12:
             violations += 1
             print(f"  VIOLATION at pair {i}: inner1={inner1:.2e} inner2={inner2:.2e}", flush=True)
@@ -192,8 +204,19 @@ def part_c() -> None:
 
     if violations > 0:
         raise AssertionError(f"MGDA verification failed: {violations} violations in {n_checks} pairs")
+    print(f"  Minimum inner product across both tasks and {n_checks} points: {min_inner:.3e}", flush=True)
+    if min_inner < -1e-12:
+        raise AssertionError(f"MGDA common-descent check failed: {min_inner:.3e} < -1e-12")
     print(f"  ✓ All {n_checks} pairs verified: d* has non-neg inner product with both grads "
           f"and is the min-norm point.", flush=True)
+
+    # Same direction: convex-hull min norm must select the smaller-norm endpoint.
+    g_small = np.array([1.0, 0.0]); g_large = np.array([3.0, 0.0])
+    a_same = mgda_alpha(g_small, g_large)
+    d_same = a_same * g_small + (1.0 - a_same) * g_large
+    if not np.allclose(d_same, g_small, atol=1e-12):
+        raise AssertionError("MGDA same-direction case did not select the smaller-norm gradient")
+    print("  ✓ Same-direction gradients select the smaller-norm gradient.", flush=True)
 
     # Special case: exactly opposite equal-norm gradients → zero direction
     g = rng.standard_normal(20)
@@ -203,9 +226,8 @@ def part_c() -> None:
     norm_opp = float(np.linalg.norm(d_opp))
     print(f"\n  Opposite equal-norm gradients: alpha*={alpha_opp:.4f}  ||d*||={norm_opp:.2e}", flush=True)
     if norm_opp > 1e-10:
-        print(f"  ⚠ ||d*|| = {norm_opp:.2e} (expected ~0 for opposite gradients; numerical tolerance)", flush=True)
-    else:
-        print("  ✓ Zero direction for opposite gradients", flush=True)
+        raise AssertionError(f"MGDA opposite-gradient case failed: ||d||={norm_opp:.3e}")
+    print("  ✓ Zero direction for opposite gradients", flush=True)
 
 
 # ---------------------------------------------------------------------------
@@ -217,11 +239,11 @@ def part_d(df: pd.DataFrame) -> None:
     print("Part (d): Summary tables", flush=True)
     print("=" * 60, flush=True)
 
-    # Best lr per method (by worst_rel = max(rel_L1, rel_L2), lower is better)
+    # Best lr per method by normalized sum of final task losses.
     best_rows = []
     for method in ["equal", "mgda", "gradnorm"]:
         sub = df[df["method"] == method]
-        best_lr = sub.groupby("lr")["worst_rel"].mean().idxmin()
+        best_lr = sub.groupby("lr")["sum_rel"].mean().idxmin()
         best = sub[sub["lr"] == best_lr]
         best_rows.append({
             "method": method,
@@ -233,6 +255,8 @@ def part_d(df: pd.DataFrame) -> None:
             "sum_rel_mean": best["sum_rel"].mean(),
             "worst_rel_mean": best["worst_rel"].mean(),
             "conflict_frac_mean": best["conflict_frac"].mean(),
+            "task1_increase_mean": best["task1_increase_frac"].mean(),
+            "task2_increase_mean": best["task2_increase_frac"].mean(),
             "mean_alpha_mean": best["mean_alpha"].mean(),
             "mean_w1_mean": best["mean_w1"].mean(),
             "mean_w2_mean": best["mean_w2"].mean(),
@@ -241,7 +265,8 @@ def part_d(df: pd.DataFrame) -> None:
     summary_df = pd.DataFrame(best_rows)
     print("\nTable 1: Best-lr summary (mean over 5 seeds, at best lr per method)")
     print(summary_df[["method", "best_lr", "L1_final_mean", "L2_final_mean",
-                       "rel_L1_mean", "rel_L2_mean", "worst_rel_mean"]].to_string(
+                       "rel_L1_mean", "rel_L2_mean", "sum_rel_mean", "worst_rel_mean",
+                       "task1_increase_mean", "task2_increase_mean", "conflict_frac_mean"]].to_string(
         index=False, float_format="{:.4f}".format))
 
     print("\n  Observations:", flush=True)
@@ -273,7 +298,7 @@ def part_d(df: pd.DataFrame) -> None:
         colors = {"equal": "blue", "mgda": "orange", "gradnorm": "green"}
 
         for method in ["equal", "mgda", "gradnorm"]:
-            best_lr = df[df["method"] == method].groupby("lr")["worst_rel"].mean().idxmin()
+            best_lr = df[df["method"] == method].groupby("lr")["sum_rel"].mean().idxmin()
             sub_best = df[(df["method"] == method) & (df["lr"] == best_lr)]
             best_seed = int(sub_best.loc[sub_best["worst_rel"].idxmin(), "seed"])
 
@@ -282,15 +307,19 @@ def part_d(df: pd.DataFrame) -> None:
                          steps=500, lr=best_lr, lr_weights=best_lr * 0.1)
             axes[0].plot(hist["L1"], label=f"{method}", color=colors[method], alpha=0.8)
             axes[1].plot(hist["L2"], label=f"{method}", color=colors[method], alpha=0.8)
-            axes[2].plot(hist["total_loss"], label=f"{method}", color=colors[method], alpha=0.8)
+            if method == "gradnorm":
+                axes[2].plot(hist["w1"], label="GradNorm w1", color=colors[method])
+                axes[2].plot(hist["w2"], label="GradNorm w2", color="purple")
+            elif method == "mgda":
+                axes[2].plot(hist["alpha"], label="MGDA alpha", color=colors[method])
 
-        for ax, title in zip(axes, ["L1 (Task 1)", "L2 (Task 2)", "L1+L2"]):
+        for ax, title in zip(axes, ["L1 (Task 1)", "L2 (Task 2)", "MGDA alpha / GradNorm weights"]):
             ax.set_xlabel("Step")
             ax.set_ylabel("Loss")
             ax.set_title(title)
             ax.legend()
             ax.grid(True, alpha=0.3)
-            ax.set_yscale("log")
+            if ax is not axes[2]: ax.set_yscale("log")
 
         plt.suptitle("Multi-task Training: equal / MGDA / GradNorm", y=1.02)
         plt.tight_layout()
@@ -298,6 +327,7 @@ def part_d(df: pd.DataFrame) -> None:
         plt.savefig(plot_path, dpi=100, bbox_inches="tight")
         plt.close()
         print(f"  Saved: {plot_path}", flush=True)
+        print("  Limits: one synthetic problem, learning rates tuned on the same data, and five seeds; these results do not establish general superiority.", flush=True)
     except Exception as e:
         print(f"  Plot skipped: {e}", flush=True)
 

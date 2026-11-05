@@ -20,6 +20,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 RESULTS.mkdir(exist_ok=True)
@@ -43,16 +46,15 @@ from trackD_parallel.federated import (
 
 def estimate_runtime() -> float:
     """Estimate total runtime in seconds and print it."""
-    # Quick calibration: time one FedAvg run with realistic settings
+    # Calibrate representative client and pooled steps, then scale by planned work.
     clients, _ = make_clients(K=10, d=20, n_per_client=200, heterogeneity=0.0, seed=42)
     t0 = time.perf_counter()
-    fedavg(clients, rounds=10, E=1, batch_size=200, lr=0.01, participation=1.0, seed=7)
+    fedavg(clients, rounds=5, E=20, batch_size=32, lr=0.01, participation=1.0, seed=7)
+    centralized_sgd(clients, total_steps=1000, batch_size=32, lr=0.01, seed=7)
     t_one = time.perf_counter() - t0
-    # Scale to full experiment:
-    # 3 het x 3 E x 3 lr x 3 seeds (100 rounds each) + participation: 3 part x 3 lr x 3 seeds
-    full_runs = (3 * 3 * 3 * 3 + 3 * 3 * 3)
-    est = full_runs * (t_one * 10)  # 10x for 100 rounds
-    return est
+    # Calibration work is 2,000 gradient steps. Sweeps use about 2.475M
+    # pooled/local steps; the factor covers per-round pooled metric evaluation.
+    return t_one * (2_475_000 / 2_000) * 1.25
 
 
 # ---------------------------------------------------------------------------
@@ -87,6 +89,18 @@ def part_a() -> None:
         raise AssertionError(f"Gradient check failed: max_abs={max_err:.2e}")
     print("  ✓ Gradient check passed", flush=True)
 
+    # Compare loss and gradient with scipy's pooled BFGS reference.
+    from scipy.optimize import minimize
+    pooled, _ = make_clients(K=5, d=10, n_per_client=50, heterogeneity=0.0, seed=0)
+    Xp = np.concatenate([c[0] for c in pooled]); yp = np.concatenate([c[1] for c in pooled])
+    w_star, loss_star = centralized_gd(pooled, l2=1e-3)
+    ref = minimize(lambda z: logistic_loss_and_grad(z, Xp, yp, 1e-3), np.zeros(Xp.shape[1]),
+                   method="BFGS", jac=True, options={"gtol": 1e-8, "maxiter": 2000})
+    if abs(loss_star - ref.fun) > 1e-8 or np.max(np.abs(logistic_loss_and_grad(w_star, Xp, yp)[1])) > 1e-6:
+        raise AssertionError("BFGS pooled reference check failed")
+    print(f"  Pooled BFGS reference: L*={loss_star:.8f}; gap = training loss - L* (non-negative at optimum).", flush=True)
+    print("  Test accuracy is evaluated on a separate generated pooled test set; communication counts downloaded and uploaded model floats.", flush=True)
+
     # E=1, full-batch, full-participation FedAvg == centralised GD
     clients, _ = make_clients(K=5, d=10, n_per_client=50, heterogeneity=0.0, seed=0)
     rounds = 20
@@ -113,7 +127,7 @@ def part_b() -> pd.DataFrame:
     heterogeneities = [0.0, 0.5, 1.0]
     E_values = [1, 5, 20]
     lr_grid = [0.05, 0.1, 0.2]
-    seeds = [7, 13, 42]
+    seeds = [7, 13, 42, 101, 202]
     rounds = 100
     batch_size = 32
 
@@ -121,7 +135,10 @@ def part_b() -> pd.DataFrame:
     t_start = time.perf_counter()
 
     for het in heterogeneities:
-        clients, _ = make_clients(K=10, d=20, n_per_client=200, heterogeneity=het, seed=42)
+        generated, _ = make_clients(K=10, d=20, n_per_client=250, heterogeneity=het, seed=42)
+        clients = [(X[:200], y[:200]) for X, y in generated]
+        X_test = np.concatenate([c[0][200:] for c in generated]); y_test = np.concatenate([c[1][200:] for c in generated])
+        _, L_star = centralized_gd(clients)
         # Best-lr centralised SGD as reference
         X_all = np.concatenate([c[0] for c in clients])
         y_all = np.concatenate([c[1] for c in clients])
@@ -140,6 +157,7 @@ def part_b() -> pd.DataFrame:
                                                batch_size=batch_size, lr=lr, seed=seed)
                     cen_final_loss = cen_hist[-1]["loss"] if cen_hist else float("nan")
                     cen_final_acc = cen_hist[-1]["accuracy"] if cen_hist else float("nan")
+                    w_eval = hist[-1]["weights"]
                     elapsed = time.perf_counter() - t0
 
                     records.append({
@@ -154,7 +172,18 @@ def part_b() -> pd.DataFrame:
                         "cen_sgd_final_loss": cen_final_loss,
                         "cen_sgd_final_acc": cen_final_acc,
                         "loss_diff": final_loss - cen_final_loss,
+                        "L_star": L_star, "fedavg_gap_to_Lstar": final_loss - L_star,
+                        "test_accuracy": accuracy(w_eval, X_test, y_test),
+                        "communication_floats": hist[-1]["comm_volume"],
                     })
+                    if het == 1.0 and seed == seeds[0]:
+                        for checkpoint in (10, 25, 50, 100):
+                            point = hist[checkpoint - 1]
+                            records.append({"experiment": "round_curve", "heterogeneity": het, "E": E,
+                                "lr": lr, "seed": seed, "participation": 1.0, "round": checkpoint,
+                                "fedavg_final_loss": point["loss"], "fedavg_final_acc": point["accuracy"],
+                                "fedavg_gap_to_Lstar": point["loss"] - L_star,
+                                "communication_floats": point["comm_volume"]})
                     elapsed_total = time.perf_counter() - t_start
                     print(f"  het={het:.1f} E={E:2d} lr={lr:.2f} seed={seed} | "
                           f"FedAvg loss={final_loss:.4f} acc={final_acc:.3f} | "
@@ -166,7 +195,10 @@ def part_b() -> pd.DataFrame:
     het = 1.0
     E = 5
     participation_vals = [0.3, 0.5, 1.0]
-    clients, _ = make_clients(K=10, d=20, n_per_client=200, heterogeneity=het, seed=42)
+    generated, _ = make_clients(K=10, d=20, n_per_client=250, heterogeneity=het, seed=42)
+    clients = [(X[:200], y[:200]) for X, y in generated]
+    X_test = np.concatenate([c[0][200:] for c in generated]); y_test = np.concatenate([c[1][200:] for c in generated])
+    _, L_star = centralized_gd(clients)
     for part in participation_vals:
         for lr in lr_grid:
             for seed in seeds:
@@ -187,6 +219,9 @@ def part_b() -> pd.DataFrame:
                     "cen_sgd_final_loss": float("nan"),
                     "cen_sgd_final_acc": float("nan"),
                     "loss_diff": float("nan"),
+                    "fedavg_gap_to_Lstar": final_loss - L_star,
+                    "test_accuracy": accuracy(hist[-1]["weights"], X_test, y_test),
+                    "communication_floats": total_comm,
                 })
                 elapsed_total = time.perf_counter() - t_start
                 print(f"  part={part:.1f} E={E:2d} lr={lr:.2f} seed={seed} | "
@@ -207,41 +242,42 @@ def part_c(df: pd.DataFrame) -> None:
 
     # Table 1: het x E sweep (mean over lr and seeds)
     het_e = df[df["experiment"] == "het_E_sweep"].copy()
-    summary1 = (
-        het_e.groupby(["heterogeneity", "E"])[
-            ["fedavg_final_loss", "fedavg_final_acc", "cen_sgd_final_loss", "cen_sgd_final_acc"]
-        ]
-        .mean()
-        .reset_index()
-    )
-    summary1.columns = ["het", "E", "FedAvg_loss", "FedAvg_acc", "CenSGD_loss", "CenSGD_acc"]
+    # Select the learning rate per setting by mean FedAvg training loss.
+    lr_scores = het_e.groupby(["heterogeneity", "E", "lr"])["fedavg_final_loss"].mean().reset_index()
+    best_lrs = lr_scores.loc[lr_scores.groupby(["heterogeneity", "E"])["fedavg_final_loss"].idxmin()]
+    het_e = het_e.merge(best_lrs[["heterogeneity", "E", "lr"]].assign(selected=True),
+                        on=["heterogeneity", "E", "lr"], how="inner")
+    summary1 = het_e.groupby(["heterogeneity", "E"])[
+        ["fedavg_final_loss", "fedavg_final_acc", "cen_sgd_final_loss", "cen_sgd_final_acc",
+         "fedavg_gap_to_Lstar", "test_accuracy", "communication_floats"]].mean().reset_index()
+    summary1.columns = ["het", "E", "FedAvg_loss", "FedAvg_acc", "CenSGD_loss", "CenSGD_acc",
+                        "FedAvg_gap_Lstar", "test_acc", "comm_floats"]
     summary1["FedAvg_vs_CenSGD"] = summary1["FedAvg_loss"] - summary1["CenSGD_loss"]
 
-    print("\nTable 1: FedAvg vs Centralised SGD (mean over lr grid and 3 seeds)")
+    print("\nTable 1: FedAvg vs Centralised SGD (selected lr, mean over 5 seeds)")
     print(summary1.to_string(index=False, float_format="{:.4f}".format))
 
     # Highlight client drift
     print("\n  Observations:", flush=True)
     for _, row in summary1.iterrows():
-        if row["FedAvg_vs_CenSGD"] > 0.01:
-            print(f"    ⚠ het={row['het']:.1f} E={row['E']:2d}: FedAvg loss {row['FedAvg_vs_CenSGD']:+.4f} "
-                  f"above CenSGD → client drift", flush=True)
-        elif row["FedAvg_vs_CenSGD"] < -0.005:
-            print(f"    ✓ het={row['het']:.1f} E={row['E']:2d}: FedAvg slightly better than CenSGD "
-                  f"(diff {row['FedAvg_vs_CenSGD']:+.4f})", flush=True)
+        if row["FedAvg_gap_Lstar"] > 0.01 and row["het"] > 0:
+            print(f"    het={row['het']:.1f} E={int(row['E']):2d}: non-IID FedAvg plateaus {row['FedAvg_gap_Lstar']:.4f} above L*, consistent with client drift.", flush=True)
+        elif row["FedAvg_gap_Lstar"] > 0.01:
+            print(f"    het={row['het']:.1f} E={int(row['E']):2d}: IID FedAvg remains {row['FedAvg_gap_Lstar']:.4f} above L* after 100 rounds; this is not evidence of non-IID client drift.", flush=True)
+        elif row["het"] > 0:
+            print(f"    het={row['het']:.1f} E={int(row['E']):2d}: non-IID FedAvg does not show a material plateau above L* (gap {row['FedAvg_gap_Lstar']:.4f}).", flush=True)
         else:
-            print(f"    ~ het={row['het']:.1f} E={row['E']:2d}: FedAvg ≈ CenSGD "
-                  f"(diff {row['FedAvg_vs_CenSGD']:+.4f})", flush=True)
+            print(f"    het={row['het']:.1f} E={int(row['E']):2d}: IID FedAvg gap to L*={row['FedAvg_gap_Lstar']:.4f}.", flush=True)
 
     # Table 2: Participation sweep
     part_df = df[df["experiment"] == "participation_sweep"].copy()
     summary2 = (
-        part_df.groupby(["participation"])[["fedavg_final_loss", "fedavg_final_acc"]]
+        part_df.groupby(["participation"])[["fedavg_final_loss", "fedavg_final_acc", "communication_floats"]]
         .mean()
         .reset_index()
     )
-    summary2.columns = ["participation", "FedAvg_loss", "FedAvg_acc"]
-    print("\nTable 2: Participation fraction (E=5, het=1.0, mean over lr and 3 seeds)")
+    summary2.columns = ["participation", "FedAvg_loss", "FedAvg_acc", "comm_floats"]
+    print("\nTable 2: Participation fraction (E=5, het=1.0, mean over lr and 5 seeds)")
     print(summary2.to_string(index=False, float_format="{:.4f}".format))
 
     # Save CSV
@@ -257,21 +293,21 @@ def part_c(df: pd.DataFrame) -> None:
 
         fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
+        curves = df[df["experiment"] == "round_curve"]
         for E_val in [1, 5, 20]:
-            sub = summary1[summary1["E"] == E_val]
-            axes[0].plot(sub["het"], sub["FedAvg_loss"], marker="o", label=f"FedAvg E={E_val}")
-            axes[0].plot(sub["het"], sub["CenSGD_loss"], marker="s", linestyle="--",
-                         label=f"CenSGD E={E_val}", alpha=0.6)
-        axes[0].set_xlabel("Heterogeneity")
-        axes[0].set_ylabel("Final loss (mean over lr, seeds)")
-        axes[0].set_title("FedAvg vs Centralised SGD")
+            sub = curves[curves["E"] == E_val].groupby("round")["fedavg_gap_to_Lstar"].mean()
+            axes[0].plot(sub.index, sub.values, marker="o", label=f"E={E_val}")
+        axes[0].set_xlabel("Rounds")
+        axes[0].set_ylabel("Training loss gap to L*")
+        axes[0].set_title("FedAvg gap vs rounds (het=1)")
         axes[0].legend(fontsize=7)
         axes[0].grid(True, alpha=0.3)
 
-        axes[1].bar(summary2["participation"].astype(str), summary2["FedAvg_acc"])
-        axes[1].set_xlabel("Participation fraction")
-        axes[1].set_ylabel("Final accuracy")
-        axes[1].set_title("Participation (het=1.0, E=5)")
+        points = df[df["experiment"] == "het_E_sweep"]
+        axes[1].scatter(points["communication_floats"], points["fedavg_gap_to_Lstar"], s=12, alpha=0.5)
+        axes[1].set_xlabel("Communication (float values)")
+        axes[1].set_ylabel("Final training loss gap to L*")
+        axes[1].set_title("Loss gap vs communication")
         axes[1].grid(True, alpha=0.3)
 
         plt.tight_layout()

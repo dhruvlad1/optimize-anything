@@ -128,7 +128,15 @@ python -m trackD_parallel.exp2_parallel --quick
 
 # 3. Pytest test suite for Track D (submodular algorithms, ILP, laws, work stealing)
 python -m pytest trackD_parallel -q
+
+# 4. Federated learning simulation (FedAvg, client drift, communication)
+python -m trackD_parallel.exp3_federated
+
+# 5. Multi-task optimization (equal weighting, MGDA, GradNorm)
+python -m trackD_parallel.exp4_multitask
 ```
+
+Part 2 is a single-process simulation; no network or real communication time is measured. Its tests run with `python -m pytest trackD_parallel -q`.
 
 ### Outputs
 

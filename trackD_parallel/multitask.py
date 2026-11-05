@@ -156,6 +156,20 @@ def _task_grads_shared(
     return gW1, gW2
 
 
+def _task_grads_shared_all(
+    params: Params, X: np.ndarray, y1: np.ndarray, y2: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Per-task gradients over every shared-layer parameter (W and b)."""
+    gW1, gW2 = _task_grads_shared(params, X, y1, y2)
+    n = len(y1)
+    h, y1p, y2p = forward(params, X)
+    dy1 = 2.0 * (y1p - y1) / n
+    dy2 = 2.0 * (y2p - y2) / n
+    gb1 = (((dy1[:, None] * params["h1"]) * (1.0 - h ** 2)).sum(axis=0))
+    gb2 = (((dy2[:, None] * params["h2"]) * (1.0 - h ** 2)).sum(axis=0))
+    return np.concatenate([gW1, gb1]), np.concatenate([gW2, gb2])
+
+
 # ---------------------------------------------------------------------------
 # 5. MGDA update step (closed-form for 2 tasks)
 # ---------------------------------------------------------------------------
@@ -189,26 +203,22 @@ def mgda_step(
     Returns (new_params, alpha, g1_norm, g2_norm, cosine_sim).
     """
     # Task gradients on the shared layer (flattened)
-    g1_flat, g2_flat = _task_grads_shared(params, X, y1, y2)
+    g1_flat, g2_flat = _task_grads_shared_all(params, X, y1, y2)
 
     alpha = mgda_alpha(g1_flat, g2_flat)
     d_shared = alpha * g1_flat + (1.0 - alpha) * g2_flat  # (d_in * hidden,)
 
     new_p = _copy_params(params)
-    new_p["W"] -= lr * d_shared.reshape(params["W"].shape)
+    w_size = params["W"].size
+    new_p["W"] -= lr * d_shared[:w_size].reshape(params["W"].shape)
+    new_p["b"] -= lr * d_shared[w_size:]
 
-    # Shared bias: use same alpha combination
+    # Task-specific head updates use each task's own gradient.
     n = len(y1)
     h, y1p, y2p = forward(params, X)
 
     dy1p = 2.0 * (y1p - y1) / n
     dy2p = 2.0 * (y2p - y2) / n
-    dpre1 = (dy1p[:, None] * params["h1"][None, :]) * (1.0 - h ** 2)
-    dpre2 = (dy2p[:, None] * params["h2"][None, :]) * (1.0 - h ** 2)
-    gb1 = dpre1.sum(axis=0)
-    gb2 = dpre2.sum(axis=0)
-    new_p["b"] -= lr * (alpha * gb1 + (1.0 - alpha) * gb2)
-
     # Head updates (each with its own task gradient only)
     new_p["h1"] -= lr * (h.T @ dy1p)
     new_p["b1"] -= lr * np.array([dy1p.sum()])
@@ -323,6 +333,14 @@ def train(
         history["L1"].append(L1)
         history["L2"].append(L2)
         history["total_loss"].append(L1 + L2)
+        if method == "mgda":
+            g1_shared, g2_shared = _task_grads_shared_all(p, X, y1, y2)
+        else:
+            g1_shared, g2_shared = _task_grads_shared(p, X, y1, y2)
+        n1, n2 = float(np.linalg.norm(g1_shared)), float(np.linalg.norm(g2_shared))
+        history.setdefault("norm1", []).append(n1)
+        history.setdefault("norm2", []).append(n2)
+        history["cosine_sim"].append(float(np.dot(g1_shared, g2_shared) / (n1 * n2 + 1e-30)))
 
         if method == "equal":
             g = backprop(p, X, y1, y2, task_weights=(1.0, 1.0))
@@ -330,14 +348,12 @@ def train(
             history["alpha"].append(0.5)
             history["w1"].append(1.0)
             history["w2"].append(1.0)
-            history["cosine_sim"].append(np.nan)
 
         elif method == "mgda":
             p, alpha, _, _, cos = mgda_step(p, X, y1, y2, lr)
             history["alpha"].append(alpha)
             history["w1"].append(np.nan)
             history["w2"].append(np.nan)
-            history["cosine_sim"].append(cos)
 
         elif method == "gradnorm":
             p, task_weights, gn_loss, _ = gradnorm_step(
@@ -346,6 +362,5 @@ def train(
             history["alpha"].append(np.nan)
             history["w1"].append(float(task_weights[0]))
             history["w2"].append(float(task_weights[1]))
-            history["cosine_sim"].append(np.nan)
 
     return history

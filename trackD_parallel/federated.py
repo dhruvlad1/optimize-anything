@@ -41,6 +41,16 @@ def make_clients(
     clients : list of (X, y) arrays per client
     w_true  : the shared ground-truth weight vector (d,)
     """
+    if not isinstance(K, (int, np.integer)) or K < 1:
+        raise ValueError("K must be a positive integer")
+    if not isinstance(d, (int, np.integer)) or d < 1:
+        raise ValueError("d must be a positive integer")
+    if not isinstance(n_per_client, (int, np.integer)) or n_per_client < 1:
+        raise ValueError("n_per_client must be a positive integer")
+    if not np.isfinite(heterogeneity) or not 0 <= heterogeneity <= 1:
+        raise ValueError("heterogeneity must be in [0, 1]")
+    if not np.isfinite(l2) or l2 < 0:
+        raise ValueError("l2 must be finite and non-negative")
     rng = np.random.default_rng(seed)
     w_true = rng.standard_normal(d)
     w_true /= np.linalg.norm(w_true)
@@ -84,6 +94,13 @@ def logistic_loss_and_grad(
 
     Returns (loss, grad) for weight vector w of shape (d,).
     """
+    w, X, y = np.asarray(w, dtype=float), np.asarray(X, dtype=float), np.asarray(y, dtype=float)
+    if X.ndim != 2 or w.ndim != 1 or X.shape[1] != w.size or y.shape != (X.shape[0],) or X.shape[0] == 0:
+        raise ValueError("Expected non-empty X (n,d), w (d,), and y (n,)")
+    if not np.all(np.isfinite(X)) or not np.all(np.isfinite(w)) or not np.all(np.isfinite(y)) or np.any((y < 0) | (y > 1)):
+        raise ValueError("Inputs must be finite and labels in [0, 1]")
+    if not np.isfinite(l2) or l2 < 0:
+        raise ValueError("l2 must be finite and non-negative")
     n = len(y)
     prob = _sigmoid(X @ w)
     prob = np.clip(prob, 1e-12, 1 - 1e-12)
@@ -110,20 +127,22 @@ def local_sgd(
     rng: np.random.Generator,
     l2: float = 1e-3,
 ) -> np.ndarray:
-    """Run E epochs of mini-batch SGD on local data.  Returns updated w."""
+    """Run exactly E sampled mini-batch gradient steps on local data."""
+    if not isinstance(E, (int, np.integer)) or E < 1 or not isinstance(batch_size, (int, np.integer)) or batch_size < 1:
+        raise ValueError("E and batch_size must be positive integers")
+    if not np.isfinite(lr) or lr <= 0:
+        raise ValueError("lr must be finite and positive")
     X, y = data
+    if X.ndim != 2 or y.shape != (X.shape[0],) or np.asarray(w).shape != (X.shape[1],) or X.shape[0] == 0:
+        raise ValueError("Invalid local data or weight shape")
     n = len(y)
     w = w.copy()
     for _ in range(E):
-        idx = rng.permutation(n)
-        for start in range(0, n, batch_size):
-            batch = idx[start : start + batch_size]
-            if len(batch) == 0:
-                break
-            Xb, yb = X[batch], y[batch]
-            prob = _sigmoid(Xb @ w)
-            grad = Xb.T @ (prob - yb) / len(batch) + l2 * w
-            w = w - lr * grad
+        batch = rng.choice(n, size=min(batch_size, n), replace=False)
+        Xb, yb = X[batch], y[batch]
+        prob = _sigmoid(Xb @ w)
+        grad = Xb.T @ (prob - yb) / len(batch) + l2 * w
+        w = w - lr * grad
     return w
 
 
@@ -153,6 +172,16 @@ def fedavg(
     history : list of dicts with keys {round, loss, accuracy, comm_volume}
               comm_volume = number of weight-floats transmitted in total up to this round.
     """
+    if not clients or any(len(c[1]) == 0 or c[0].ndim != 2 or c[1].shape != (c[0].shape[0],) for c in clients):
+        raise ValueError("clients must contain non-empty (X, y) pairs")
+    if not isinstance(rounds, (int, np.integer)) or rounds < 1 or not isinstance(E, (int, np.integer)) or E < 1:
+        raise ValueError("rounds and E must be positive integers")
+    if not isinstance(batch_size, (int, np.integer)) or batch_size < 1 or not np.isfinite(lr) or lr <= 0:
+        raise ValueError("batch_size and lr must be positive")
+    if not 0 < participation <= 1 or not np.isfinite(participation):
+        raise ValueError("participation must be in (0, 1]")
+    if any(c[0].shape[1] != clients[0][0].shape[1] for c in clients):
+        raise ValueError("all clients must have the same feature dimension")
     rng = np.random.default_rng(seed)
     K = len(clients)
     d = clients[0][0].shape[1]
@@ -194,7 +223,8 @@ def fedavg(
 
         loss, _ = logistic_loss_and_grad(w_global, X_all, y_all, l2)
         acc = accuracy(w_global, X_all, y_all)
-        history.append({"round": r + 1, "loss": loss, "accuracy": acc, "comm_volume": total_comm})
+        history.append({"round": r + 1, "loss": loss, "accuracy": acc, "comm_volume": total_comm,
+                        "weights": w_global.copy()})
 
     return history
 

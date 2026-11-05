@@ -151,3 +151,15 @@ When tasks have variable or heavy-tailed execution durations $\tau_1, \tau_2, \d
   - Model parallelism with multithreaded column-sharded matrix multiplications releasing the GIL.
 - **Simulated:**
   - Discrete-event simulation of work-stealing across $p \in \{2, 4, 8, 16, 32\}$ worker deques on the 96 heavy-tailed task durations.
+
+## 7. Distributed and Multi-task Optimization (Part 2)
+
+**FedAvg.** With $K$ clients holding local data, each round the server sends global weights to selected clients. Each selected client performs $E$ local gradient steps with batch size $B$, then returns its weights. The server averages returned weights weighted by client data size. Under non-IID data, local updates can drift toward different client objectives. Model communication is proportional to rounds times model size (with the number of selected clients and both directions included in the byte/float count).
+
+**MGDA.** For two task gradients $g_1,g_2$ on the shared parameters, the minimum-norm point of their convex hull uses
+$$\alpha^* = \operatorname{clip}\!\left(\frac{(g_2-g_1)\cdot g_2}{\|g_1-g_2\|^2},0,1\right), \qquad d=\alpha^*g_1+(1-\alpha^*)g_2.$$
+This is a common descent direction unless $d=0$, which is a Pareto-stationary point.
+
+**GradNorm.** Task weights $w_i$ are updated to minimize $\sum_i |G_i-\bar G r_i^\alpha|$, where $G_i=\|w_i\nabla_W L_i\|$ is the weighted task gradient norm with respect to shared parameters, $\bar G$ is the mean norm, and $r_i=L_i(t)/L_i(0)$ normalized by its mean is the relative inverse training rate. The target is treated as constant during the weight update, and weights are renormalized to sum to the number of tasks.
+
+The federated experiment is a **SIMULATION** of distributed training in one process: there is no network and no real communication time.
