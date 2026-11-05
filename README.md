@@ -292,6 +292,8 @@ All quantum runs are classical simulations; no real quantum hardware is used.
 python -m trackI_quantum_algos.exp1_algorithms
 python -m trackI_quantum_algos.exp2_annealing
 python -m trackI_quantum_algos.exp3_noise
+python -m trackI_quantum_algos.exp4_qml
+python -m trackI_quantum_algos.exp5_grover_vs_linear
 python -m pytest trackI_quantum_algos -q
 ```
 

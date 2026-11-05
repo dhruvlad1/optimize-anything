@@ -1,0 +1,95 @@
+Qiskit version: 2.6.1
+Qiskit Aer version: 0.18.2
+Inspected API transpile(circuits: ~_CircuitT, backend: qiskit.providers.backend.Backend | None = None, basis_gates: list[str] | None = None, coupling_map: qiskit.transpiler.coupling.CouplingMap | list[list[int]] | None = None, initial_layout: qiskit.transpiler.layout.Layout | dict | list | None = None, layout_method: str | None = None, routing_method: str | None = None, translation_method: str | None = None, scheduling_method: str | None = None, dt: float | None = None, approximation_degree: float | None = 1.0, seed_transpiler: int | None = None, optimization_level: int | None = None, callback: collections.abc.Callable[[qiskit.transpiler.basepasses.BasePass, qiskit._accelerate.circuit.DAGCircuit, float, qiskit.passmanager.compilation_status.PropertySet, int], typing.Any] | None = None, output_name: str | list[str] | None = None, unitary_synthesis_method: str = 'default', unitary_synthesis_plugin_config: dict | None = None, target: qiskit.transpiler.target.Target | None = None, hls_config: qiskit.transpiler.passes.synthesis.high_level_synthesis.HLSConfig | None = None, init_method: str | None = None, optimization_method: str | None = None, ignore_backend_supplied_default_methods: bool = False, num_processes: int | None = None, qubits_initially_zero: bool = True) -> ~_CircuitT
+Inspected API QuantumCircuit.mcx(self, control_qubits: 'Sequence[QubitSpecifier]', target_qubit: 'QubitSpecifier', ancilla_qubits: 'QubitSpecifier | Sequence[QubitSpecifier] | None' = None, mode: 'str | None' = None, ctrl_state: 'str | int | None' = None, label: 'str | None' = None) -> 'InstructionSet'
+Inspected API QuantumCircuit.cp(self, theta: 'ParameterValueType', control_qubit: 'QubitSpecifier', target_qubit: 'QubitSpecifier', label: 'str | None' = None, ctrl_state: 'str | int | None' = None) -> 'InstructionSet'
+Inspected API QuantumCircuit.measure_all(self, inplace: 'bool' = True, add_bits: 'bool' = True) -> 'QuantumCircuit | None'
+Inspected API QuantumCircuit.append(self, instruction: 'Operation | CircuitInstruction', qargs: 'Sequence[QubitSpecifier] | None' = None, cargs: 'Sequence[ClbitSpecifier] | None' = None, *, copy: 'bool' = True) -> 'InstructionSet'
+Inspected API Gate.control(self, num_ctrl_qubits: 'int' = 1, label: 'str | None' = None, ctrl_state: 'int | str | None' = None, annotated: 'bool | None' = None)
+Inspected API Statevector.from_instruction(instruction: 'Instruction | QuantumCircuit') -> 'Statevector'
+Inspected API AerSimulator(configuration=None, properties=None, provider=None, target=None, **backend_options)
+Inspected API NoiseModel.add_all_qubit_quantum_error(self, error, instructions, warnings=True)
+Inspected API depolarizing_error(param, num_qubits)
+Estimated runtime: 300s; calls n=4..14, timings n=4..20.
+progress oracle counts n=4, N=16: linear avg=8.5; Grover expected calls=3.121
+progress oracle counts n=5, N=32: linear avg=16.5; Grover expected calls=4.003
+progress oracle counts n=6, N=64: linear avg=32.5; Grover expected calls=6.021
+progress oracle counts n=7, N=128: linear avg=64.5; Grover expected calls=8.035
+progress oracle counts n=8, N=256: linear avg=128.5; Grover expected calls=12.001
+progress oracle counts n=9, N=512: linear avg=256.5; Grover expected calls=17.009
+progress oracle counts n=10, N=1024: linear avg=512.5; Grover expected calls=25.013
+progress oracle counts n=11, N=2048: linear avg=1024.5; Grover expected calls=35.000
+progress oracle counts n=12, N=4096: linear avg=2048.5; Grover expected calls=50.003
+progress oracle counts n=13, N=8192: linear avg=4096.5; Grover expected calls=71.006
+progress oracle counts n=14, N=16384: linear avg=8192.5; Grover expected calls=100.000
+
+Oracle-call comparison
+   label  n     N  linear_avg_calls  linear_worst_calls  random_sampling_mean_calls  grover_calls_per_run  grover_success_probability  grover_expected_calls_with_restarts  classical_over_grover_measured classical_avg_formula classical_worst_formula           grover_queries_formula       ideal_query_reduction
+MEASURED  4    16               8.5                  16                       13.99                     3                    0.961319                             3.120712                        2.723737  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED  5    32              16.5                  32                       37.72                     4                    0.999182                             4.003273                        4.121627  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED  6    64              32.5                  64                       64.01                     6                    0.996586                             6.020556                        5.398172  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED  7   128              64.5                 128                      130.48                     8                    0.995620                             8.035195                        8.027185  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED  8   256             128.5                 256                      247.70                    12                    0.999947                            12.000636                       10.707766  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED  9   512             256.5                 512                      514.01                    17                    0.999448                            17.009389                       15.079907  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED 10  1024             512.5                1024                      984.47                    25                    0.999461                            25.013476                       20.488956  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED 11  2048            1024.5                2048                     2021.89                    35                    0.999997                            35.000110                       29.271336  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED 12  4096            2048.5                4096                     4613.71                    50                    0.999945                            50.002733                       40.967761  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED 13  8192            4096.5                8192                     9255.67                    71                    0.999916                            71.005980                       57.692324  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+MEASURED 14 16384            8192.5               16384                    15348.62                   100                    1.000000                           100.000022                       81.924982  THEORETICAL: (N+1)/2          THEORETICAL: N THEORETICAL: floor(pi/4*sqrt(N)) THEORETICAL: sqrt(N)/(pi/4)
+
+Hand-written Grover transpiled gate counts
+   label  n   N  k  depth  cx_total  cx_per_iteration classical_avg_comparisons  cx_over_classical_avg
+MEASURED  3   8  2     55        24              12.0          THEORETICAL: 4.0                  6.000
+MEASURED  4  16  3    171        84              28.0          THEORETICAL: 8.0                 10.500
+MEASURED  5  32  4    627       288              72.0         THEORETICAL: 16.0                 18.000
+MEASURED  6  64  6   1295       984             164.0         THEORETICAL: 32.0                 30.750
+MEASURED  7 128  8   2173      1952             244.0         THEORETICAL: 64.0                 30.500
+MEASURED  8 256 12   3929      4080             340.0        THEORETICAL: 128.0                 31.875
+progress timing n=4: Python 1.551e-06s, NumPy 8.579e-07s, statevector Grover 4.54e-05s
+progress timing n=5: Python 3.279e-06s, NumPy 8.697e-07s, statevector Grover 4.55e-05s
+progress timing n=6: Python 6.567e-06s, NumPy 9.75e-07s, statevector Grover 7.47e-05s
+progress timing n=7: Python 1.145e-05s, NumPy 8.992e-07s, statevector Grover 3.76e-05s
+progress timing n=8: Python 2.169e-05s, NumPy 9.203e-07s, statevector Grover 5.34e-05s
+progress timing n=9: Python 4.517e-05s, NumPy 1.012e-06s, statevector Grover 7.95e-05s
+progress timing n=10: Python 9.694e-05s, NumPy 1.219e-06s, statevector Grover 0.0001537s
+progress timing n=11: Python 0.0002068s, NumPy 1.387e-06s, statevector Grover 0.000254s
+progress timing n=12: Python 0.0004251s, NumPy 1.65e-06s, statevector Grover 0.0003986s
+progress timing n=13: Python 0.000852s, NumPy 4.8e-06s, statevector Grover 0.0007683s
+progress timing n=14: Python 0.001557s, NumPy 7.4e-06s, statevector Grover 0.002188s
+progress timing n=15: Python 0.002839s, NumPy 1.32e-05s, statevector Grover 0.003645s
+progress timing n=16: Python 0.005773s, NumPy 1.32e-05s, statevector Grover 0.07135s
+progress timing n=17: Python 0.0137s, NumPy 3.46e-05s, statevector Grover 0.1778s
+progress timing n=18: Python 0.02518s, NumPy 4.5e-05s, statevector Grover 0.5054s
+progress timing n=19: Python 0.05206s, NumPy 6.41e-05s, statevector Grover 1.462s
+progress timing n=20: Python 0.104s, NumPy 0.0002203s, statevector Grover 4.23s
+
+Wall-clock timings (quantum is simulated)
+   label  n       N  python_linear_seconds  numpy_argmax_seconds  numpy_statevector_grover_seconds  python_over_grover_time  numpy_over_grover_time  grover_probability
+MEASURED  4      16               0.000002          8.579000e-07                          0.000045                 0.034170                0.018896            0.961319
+MEASURED  5      32               0.000003          8.697266e-07                          0.000045                 0.072077                0.019115            0.999182
+MEASURED  6      64               0.000007          9.749999e-07                          0.000075                 0.087914                0.013052            0.996586
+MEASURED  7     128               0.000011          8.992188e-07                          0.000038                 0.304480                0.023915            0.995620
+MEASURED  8     256               0.000022          9.203122e-07                          0.000053                 0.406133                0.017234            0.999947
+MEASURED  9     512               0.000045          1.012499e-06                          0.000080                 0.568200                0.012736            0.999448
+MEASURED 10    1024               0.000097          1.218748e-06                          0.000154                 0.630693                0.007929            0.999461
+MEASURED 11    2048               0.000207          1.387496e-06                          0.000254                 0.813976                0.005463            0.999997
+MEASURED 12    4096               0.000425          1.649998e-06                          0.000399                 1.066357                0.004139            0.999945
+MEASURED 13    8192               0.000852          4.799978e-06                          0.000768                 1.108942                0.006248            0.999916
+MEASURED 14   16384               0.001557          7.399998e-06                          0.002188                 0.711680                0.003383            1.000000
+MEASURED 15   32768               0.002839          1.319998e-05                          0.003645                 0.778939                0.003622            0.999987
+MEASURED 16   65536               0.005773          1.320004e-05                          0.071354                 0.080913                0.000185            0.999988
+MEASURED 17  131072               0.013695          3.460003e-05                          0.177821                 0.077017                0.000195            0.999999
+MEASURED 18  262144               0.025176          4.499999e-05                          0.505426                 0.049811                0.000089            0.999998
+MEASURED 19  524288               0.052059          6.410002e-05                          1.461994                 0.035608                0.000044            1.000000
+MEASURED 20 1048576               0.103980          2.203000e-04                          4.229748                 0.024583                0.000052            1.000000
+Inspected trackD_parallel.csv columns: ['experiment', 'procs', 'metric', 'value', 'type', 'strategy', 'makespan_s', 'speedup', 'imbalance', 'sim_makespan_s', 'steals', 'efficiency', 'throughput_par', 'threads']
+
+Parallel speedups with source rows and the Grover query reduction evaluated at N=2^p
+   label            experiment  procs  metric    value     type         grover_N  grover_query_reduction parallel_ceiling_p
+MEASURED part_a_strong_scaling    1.0 speedup 1.000000 measured THEORETICAL: 2^p                1.800633     THEORETICAL: p
+MEASURED part_a_strong_scaling    2.0 speedup 1.232068 measured THEORETICAL: 2^p                2.546479     THEORETICAL: p
+MEASURED part_a_strong_scaling    4.0 speedup 1.985227 measured THEORETICAL: 2^p                5.092958     THEORETICAL: p
+MEASURED part_a_strong_scaling    8.0 speedup 2.214701 measured THEORETICAL: 2^p               20.371833     THEORETICAL: p
+MEASURED part_a_strong_scaling   12.0 speedup 3.261558 measured THEORETICAL: 2^p               81.487331     THEORETICAL: p
+Classical Grover simulation costs about sqrt(N) iterations times N amplitudes, so it cannot beat a linear scan. A physical speedup needs fault-tolerant hardware and an oracle cheaper than reading/loading the data (THEORETICAL).
+Saved D:\projects\optimize-anything\results\trackI_grover_vs_linear.csv and plots.

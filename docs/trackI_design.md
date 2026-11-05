@@ -15,3 +15,15 @@ Every quantum result here is **SIMULATED** on a classical computer; no real quan
 Annealing gaps are evaluated in the global-spin-flip-even sector because the Max-Cut Hamiltonian commutes with $P=\prod_i X_i$ and the initial state has parity +1. The full Hamiltonian's lowest gap closes at the endpoint due to the twofold spin-flip degeneracy; that is not the relevant gap here.
 
 Annealing embedding counts are theoretical lower bounds derived from maximum coupler counts alone. They do not construct hardware embeddings and no annealing hardware is used. The Shor modular multiplication unitary is a matrix-based simulator oracle, not a gate-level decomposition.
+
+## Quantum machine learning and search-cost comparisons
+
+**Quantum kernel SVM.** The kernel is $k(x,x')=|\langle\phi(x)|\phi(x')\rangle|^2$. The two-repeat ZZ-style feature map applies Hadamards, $RZ(x_i)$ rotations, and $RZZ(x_ix_j)$ rotations for each feature pair. A classical SVM consumes the precomputed kernel. Shot estimates can be non-PSD; the implementation symmetrizes them, clips negative eigenvalues, and renormalizes the diagonal before SVM fitting.
+
+**Variational classifier.** It uses the same feature map followed by $L$ layers of $RY$ and $RZ$ rotations with a CNOT ladder. Output is $\langle Z_0\rangle$, labels are $\pm1$, and the objective is mean squared error. Adam uses parameter-shift gradients; feature encoding values are fixed data, not trainable parameters.
+
+**Fair comparison protocol.** Models share data splits and seeds. Hyperparameters are selected by five-fold cross-validation on training data only; the test set is evaluated once per final model. A parameter-matched classical MLP is included. Cost reporting includes training time, trainable parameters (or support-vector count for kernel methods), circuit evaluations and shots, and the number of kernel circuit pairs.
+
+**Grover against linear search.** We compare oracle calls, transpiled gate counts, and wall-clock times. Classical statevector simulation still performs about $\sqrt{N}$ iterations over $N$ amplitudes; it cannot outperform a linear scan for searching classical data. A physical query speedup would require fault-tolerant hardware and an oracle cheaper than loading or reading the data.
+
+All quantum results in these comparisons are **SIMULATED**. Tables use the labels **MEASURED**, **SIMULATED**, and **THEORETICAL** on every row.
