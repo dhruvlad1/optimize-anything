@@ -297,3 +297,4 @@ All repository commits follow a standardized prefix convention to clearly distin
 | --- | --- | --- | --- | --- |
 | Claude | Claude Sonnet 5.5 | 00_setup, E, F, G, H | 2026-10-27 to 2026-10-28 | Planning, prompt writing, review of results, debugging, documentation (prompt logs, failure log) |
 | Antigravity | Gemini 4.8 Flash | 00_setup, E, F, H | 2026-10-27 to 2026-10-28 | Code generation, running tests and benchmarks |
+| Codex | <MODEL NAME SHOWN IN CODEX> | D | 2026-11-04 | Code generation and bug fixing (took over Track D part 2 after Antigravity hit its usage limit) |
