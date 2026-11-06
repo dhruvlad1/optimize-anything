@@ -4,3 +4,5 @@ __pycache__/
 results/*.tmp
 trackH_dbms/data/
 .env
+trackJ_software_eng/target/
+trackJ_software_eng/work/

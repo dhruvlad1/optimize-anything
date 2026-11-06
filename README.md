@@ -299,6 +299,18 @@ python -m pytest trackI_quantum_algos -q
 
 Use `--quick` with any experiment to run its reduced smoke configuration. Results are written to `results/trackI_*.csv` and PNG plots.
 
+## Track J: Test-suite minimization
+
+The target is isolated under `trackJ_software_eng/target/`; experiments use disposable copies in `trackJ_software_eng/work/`.
+
+```powershell
+python -m trackJ_software_eng.setup_target
+python -m pytest trackJ_software_eng -q
+python -m trackJ_software_eng.profile_tests
+python -m trackJ_software_eng.minimize
+python -m trackJ_software_eng.mutants
+```
+
 ## Commit Convention
 
 All repository commits follow a standardized prefix convention to clearly distinguish AI-assisted generation from manual work:

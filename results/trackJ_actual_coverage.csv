@@ -1,0 +1,7 @@
+method,actual_lines,total_lines,actual_branches,total_branches,missing_lines,missing_branches
+full_suite,1356,1356,452,452,0,0
+ilp,1289,1356,414,452,67,38
+greedy,1299,1356,419,452,57,33
+fastest_until_covered,1304,1356,422,452,52,30
+unit_cost_ilp,1291,1356,413,452,65,39
+unit_cost_greedy,1299,1356,415,452,57,37

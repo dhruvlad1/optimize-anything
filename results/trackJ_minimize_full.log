@@ -1,0 +1,140 @@
+Runtime facts from results/trackJ_profile.csv
+tests=299; median_runtime_s == 0: 270; smallest nonzero: 0.01s
+runtime bin (s) | tests
+0.00 | 270
+0.01 | 16
+0.02 | 1
+0.03 | 1
+0.04 | 0
+0.05 | 1
+0.06 | 1
+0.07 | 1
+0.08 | 0
+0.09 | 0
+0.10 | 0
+>0.10 | 8
+Full coverage universe: 1356 lines and 452 branches across 299 tests.
+SCIP runtime ILP: unavailable (No module named 'ortools'); no optimality proof or SCIP solve time. SciPy MILP result: tests=60, floored objective=2.92s.
+Unit-cost SCIP ILP: unavailable (No module named 'ortools'); SciPy MILP result: tests=58, objective=58.
+Solver and baseline results (line/branch coverage is against the recorded full-suite union)
+               method  tests  floored_cost_s  raw_runtime_s line_coverage branch_coverage
+           full_suite    299            6.72           4.02     1356/1356         452/452
+                  ilp     60            2.92           2.43     1356/1356         452/452
+               greedy     86            3.16           2.42     1356/1356         452/452
+fastest_until_covered    111            3.41           2.44     1356/1356         452/452
+              first_k     60            0.96           0.39      773/1356         195/452
+            random_01     60            0.74           0.18     1022/1356         310/452
+            random_02     60            0.98           0.47      980/1356         292/452
+            random_03     60            0.93           0.35      983/1356         291/452
+            random_04     60            0.67           0.09     1034/1356         312/452
+            random_05     60            0.65           0.11     1024/1356         307/452
+            random_06     60            1.42           0.86     1031/1356         315/452
+            random_07     60            0.66           0.10      973/1356         282/452
+            random_08     60            0.69           0.15     1022/1356         312/452
+            random_09     60            0.60           0.04     1021/1356         292/452
+            random_10     60            0.61           0.02     1012/1356         292/452
+            random_11     60            1.92           1.40     1117/1356         371/452
+            random_12     60            1.76           1.19     1075/1356         325/452
+            random_13     60            0.94           0.39     1092/1356         333/452
+            random_14     60            1.11           0.55      969/1356         283/452
+            random_15     60            1.35           0.80      992/1356         305/452
+            random_16     60            1.42           0.89     1053/1356         319/452
+            random_17     60            1.78           1.24     1134/1356         359/452
+            random_18     60            1.85           1.32     1108/1356         346/452
+            random_19     60            1.67           1.14     1131/1356         357/452
+            random_20     60            0.75           0.22     1035/1356         317/452
+        unit_cost_ilp     58            3.05           2.59     1356/1356         452/452
+     unit_cost_greedy     58            3.05           2.59     1356/1356         452/452
+
+Actual documented-suite execution and coverage validation
+full_suite: coverage run wall=27.192s; actual coverage=1356/1356 lines, 452/452 branches; missing lines=0, branches=0
+........................................................................ [ 24%]
+........................................................................ [ 48%]
+........................................................................ [ 72%]
+........................................................................ [ 96%]
+...........                                                              [100%]
+299 passed in 23.05s
+timing full_suite coverage=False repetition=1: 7.879s
+timing full_suite coverage=False repetition=2: 7.319s
+timing full_suite coverage=False repetition=3: 7.516s
+timing full_suite coverage=True repetition=1: 26.154s
+timing full_suite coverage=True repetition=2: 27.296s
+timing full_suite coverage=True repetition=3: 28.346s
+ilp: coverage run wall=18.021s; actual coverage=1308/1356 lines, 416/452 branches; missing lines=48, branches=36
+............................................................             [100%]
+60 passed in 14.48s
+WARNING: ilp failed full coverage; missing lines=['src/sortedcontainers/sorteddict.py:281', 'src/sortedcontainers/sorteddict.py:287', 'src/sortedcontainers/sorteddict.py:389', 'src/sortedcontainers/sorteddict.py:420', 'src/sortedcontainers/sorteddict.py:421', 'src/sortedcontainers/sorteddict.py:423', 'src/sortedcontainers/sorteddict.py:424', 'src/sortedcontainers/sorteddict.py:425', 'src/sortedcontainers/sortedlist.py:1106', 'src/sortedcontainers/sortedlist.py:1111', 'src/sortedcontainers/sortedlist.py:1321', 'src/sortedcontainers/sortedlist.py:1333', 'src/sortedcontainers/sortedlist.py:1338', 'src/sortedcontainers/sortedlist.py:1344', 'src/sortedcontainers/sortedlist.py:1350', 'src/sortedcontainers/sortedlist.py:1364', 'src/sortedcontainers/sortedlist.py:145', 'src/sortedcontainers/sortedlist.py:1941', 'src/sortedcontainers/sortedlist.py:1942', 'src/sortedcontainers/sortedlist.py:1943'], branches=['src/sortedcontainers/sorteddict.py:280->281', 'src/sortedcontainers/sorteddict.py:286->287', 'src/sortedcontainers/sorteddict.py:388->389', 'src/sortedcontainers/sorteddict.py:420->421', 'src/sortedcontainers/sorteddict.py:420->423', 'src/sortedcontainers/sortedlist.py:1105->1106', 'src/sortedcontainers/sortedlist.py:1110->1111', 'src/sortedcontainers/sortedlist.py:1320->1321', 'src/sortedcontainers/sortedlist.py:1332->1333', 'src/sortedcontainers/sortedlist.py:1337->1338', 'src/sortedcontainers/sortedlist.py:1343->1344', 'src/sortedcontainers/sortedlist.py:1349->1350', 'src/sortedcontainers/sortedlist.py:1361->1364', 'src/sortedcontainers/sortedlist.py:142->145', 'src/sortedcontainers/sortedlist.py:1938->1941', 'src/sortedcontainers/sortedlist.py:1942->1935', 'src/sortedcontainers/sortedlist.py:1942->1943', 'src/sortedcontainers/sortedlist.py:1944->1945', 'src/sortedcontainers/sortedlist.py:1944->1946', 'src/sortedcontainers/sortedlist.py:2333->2334']
+timing ilp coverage=False repetition=1: 5.673s
+timing ilp coverage=False repetition=2: 6.823s
+timing ilp coverage=False repetition=3: 5.870s
+timing ilp coverage=True repetition=1: 21.335s
+timing ilp coverage=True repetition=2: 20.526s
+timing ilp coverage=True repetition=3: 21.963s
+greedy: coverage run wall=26.419s; actual coverage=1299/1356 lines, 419/452 branches; missing lines=57, branches=33
+........................................................................ [ 83%]
+..............                                                           [100%]
+86 passed in 22.05s
+WARNING: greedy failed full coverage; missing lines=['src/sortedcontainers/sorteddict.py:281', 'src/sortedcontainers/sorteddict.py:287', 'src/sortedcontainers/sorteddict.py:389', 'src/sortedcontainers/sorteddict.py:420', 'src/sortedcontainers/sorteddict.py:421', 'src/sortedcontainers/sorteddict.py:423', 'src/sortedcontainers/sorteddict.py:424', 'src/sortedcontainers/sorteddict.py:425', 'src/sortedcontainers/sorteddict.py:609', 'src/sortedcontainers/sorteddict.py:656', 'src/sortedcontainers/sorteddict.py:685', 'src/sortedcontainers/sorteddict.py:686', 'src/sortedcontainers/sorteddict.py:688', 'src/sortedcontainers/sorteddict.py:689', 'src/sortedcontainers/sorteddict.py:690', 'src/sortedcontainers/sorteddict.py:692', 'src/sortedcontainers/sorteddict.py:693', 'src/sortedcontainers/sorteddict.py:736', 'src/sortedcontainers/sorteddict.py:737', 'src/sortedcontainers/sorteddict.py:739'], branches=['src/sortedcontainers/sorteddict.py:280->281', 'src/sortedcontainers/sorteddict.py:286->287', 'src/sortedcontainers/sorteddict.py:388->389', 'src/sortedcontainers/sorteddict.py:420->421', 'src/sortedcontainers/sorteddict.py:420->423', 'src/sortedcontainers/sorteddict.py:688->689', 'src/sortedcontainers/sorteddict.py:688->692', 'src/sortedcontainers/sorteddict.py:739->740', 'src/sortedcontainers/sorteddict.py:739->743', 'src/sortedcontainers/sortedlist.py:1110->1111', 'src/sortedcontainers/sortedlist.py:1254->1255', 'src/sortedcontainers/sortedlist.py:1320->1321', 'src/sortedcontainers/sortedlist.py:1337->1338', 'src/sortedcontainers/sortedlist.py:1343->1344', 'src/sortedcontainers/sortedlist.py:1349->1350', 'src/sortedcontainers/sortedlist.py:1361->1364', 'src/sortedcontainers/sortedlist.py:142->145', 'src/sortedcontainers/sortedlist.py:1938->1941', 'src/sortedcontainers/sortedlist.py:1942->1935', 'src/sortedcontainers/sortedlist.py:1942->1943']
+timing greedy coverage=False repetition=1: 8.059s
+timing greedy coverage=False repetition=2: 7.829s
+timing greedy coverage=False repetition=3: 5.827s
+timing greedy coverage=True repetition=1: 22.414s
+timing greedy coverage=True repetition=2: 25.072s
+timing greedy coverage=True repetition=3: 25.929s
+fastest_until_covered: coverage run wall=25.036s; actual coverage=1304/1356 lines, 422/452 branches; missing lines=52, branches=30
+........................................................................ [ 64%]
+.......................................                                  [100%]
+111 passed in 20.85s
+WARNING: fastest_until_covered failed full coverage; missing lines=['src/sortedcontainers/sorteddict.py:281', 'src/sortedcontainers/sorteddict.py:287', 'src/sortedcontainers/sorteddict.py:389', 'src/sortedcontainers/sorteddict.py:420', 'src/sortedcontainers/sorteddict.py:421', 'src/sortedcontainers/sorteddict.py:423', 'src/sortedcontainers/sorteddict.py:424', 'src/sortedcontainers/sorteddict.py:425', 'src/sortedcontainers/sorteddict.py:609', 'src/sortedcontainers/sorteddict.py:656', 'src/sortedcontainers/sorteddict.py:685', 'src/sortedcontainers/sorteddict.py:686', 'src/sortedcontainers/sorteddict.py:688', 'src/sortedcontainers/sorteddict.py:689', 'src/sortedcontainers/sorteddict.py:690', 'src/sortedcontainers/sorteddict.py:692', 'src/sortedcontainers/sorteddict.py:693', 'src/sortedcontainers/sorteddict.py:736', 'src/sortedcontainers/sorteddict.py:737', 'src/sortedcontainers/sorteddict.py:739'], branches=['src/sortedcontainers/sorteddict.py:280->281', 'src/sortedcontainers/sorteddict.py:286->287', 'src/sortedcontainers/sorteddict.py:388->389', 'src/sortedcontainers/sorteddict.py:420->421', 'src/sortedcontainers/sorteddict.py:420->423', 'src/sortedcontainers/sorteddict.py:688->689', 'src/sortedcontainers/sorteddict.py:688->692', 'src/sortedcontainers/sorteddict.py:739->740', 'src/sortedcontainers/sorteddict.py:739->743', 'src/sortedcontainers/sortedlist.py:1254->1255', 'src/sortedcontainers/sortedlist.py:1320->1321', 'src/sortedcontainers/sortedlist.py:1337->1338', 'src/sortedcontainers/sortedlist.py:1343->1344', 'src/sortedcontainers/sortedlist.py:1349->1350', 'src/sortedcontainers/sortedlist.py:1361->1364', 'src/sortedcontainers/sortedlist.py:142->145', 'src/sortedcontainers/sortedlist.py:1938->1941', 'src/sortedcontainers/sortedlist.py:1942->1935', 'src/sortedcontainers/sortedlist.py:1942->1943', 'src/sortedcontainers/sortedlist.py:1944->1945']
+timing fastest_until_covered coverage=False repetition=1: 7.421s
+timing fastest_until_covered coverage=False repetition=2: 6.435s
+timing fastest_until_covered coverage=False repetition=3: 5.978s
+timing fastest_until_covered coverage=True repetition=1: 23.644s
+timing fastest_until_covered coverage=True repetition=2: 27.656s
+timing fastest_until_covered coverage=True repetition=3: 26.780s
+unit_cost_ilp: coverage run wall=26.773s; actual coverage=1311/1356 lines, 416/452 branches; missing lines=45, branches=36
+..........................................................               [100%]
+58 passed in 22.01s
+WARNING: unit_cost_ilp failed full coverage; missing lines=['src/sortedcontainers/sorteddict.py:281', 'src/sortedcontainers/sorteddict.py:287', 'src/sortedcontainers/sorteddict.py:389', 'src/sortedcontainers/sorteddict.py:421', 'src/sortedcontainers/sortedlist.py:1111', 'src/sortedcontainers/sortedlist.py:1321', 'src/sortedcontainers/sortedlist.py:1333', 'src/sortedcontainers/sortedlist.py:1338', 'src/sortedcontainers/sortedlist.py:1344', 'src/sortedcontainers/sortedlist.py:1350', 'src/sortedcontainers/sortedlist.py:1364', 'src/sortedcontainers/sortedlist.py:145', 'src/sortedcontainers/sortedlist.py:1921', 'src/sortedcontainers/sortedlist.py:1941', 'src/sortedcontainers/sortedlist.py:1942', 'src/sortedcontainers/sortedlist.py:1943', 'src/sortedcontainers/sortedlist.py:1944', 'src/sortedcontainers/sortedlist.py:1945', 'src/sortedcontainers/sortedlist.py:1946', 'src/sortedcontainers/sortedlist.py:1947'], branches=['src/sortedcontainers/sorteddict.py:280->281', 'src/sortedcontainers/sorteddict.py:286->287', 'src/sortedcontainers/sorteddict.py:388->389', 'src/sortedcontainers/sorteddict.py:420->421', 'src/sortedcontainers/sortedlist.py:1110->1111', 'src/sortedcontainers/sortedlist.py:1320->1321', 'src/sortedcontainers/sortedlist.py:1332->1333', 'src/sortedcontainers/sortedlist.py:1337->1338', 'src/sortedcontainers/sortedlist.py:1343->1344', 'src/sortedcontainers/sortedlist.py:1349->1350', 'src/sortedcontainers/sortedlist.py:1361->1364', 'src/sortedcontainers/sortedlist.py:142->145', 'src/sortedcontainers/sortedlist.py:1920->1921', 'src/sortedcontainers/sortedlist.py:1938->1941', 'src/sortedcontainers/sortedlist.py:1942->1935', 'src/sortedcontainers/sortedlist.py:1942->1943', 'src/sortedcontainers/sortedlist.py:1944->1945', 'src/sortedcontainers/sortedlist.py:1944->1946', 'src/sortedcontainers/sortedlist.py:2333->2334', 'src/sortedcontainers/sortedlist.py:2345->2346']
+timing unit_cost_ilp coverage=False repetition=1: 7.271s
+timing unit_cost_ilp coverage=False repetition=2: 6.395s
+timing unit_cost_ilp coverage=False repetition=3: 7.021s
+timing unit_cost_ilp coverage=True repetition=1: 26.039s
+timing unit_cost_ilp coverage=True repetition=2: 28.709s
+timing unit_cost_ilp coverage=True repetition=3: 30.148s
+unit_cost_greedy: coverage run wall=28.509s; actual coverage=1299/1356 lines, 415/452 branches; missing lines=57, branches=37
+..........................................................               [100%]
+58 passed in 23.45s
+WARNING: unit_cost_greedy failed full coverage; missing lines=['src/sortedcontainers/sorteddict.py:281', 'src/sortedcontainers/sorteddict.py:287', 'src/sortedcontainers/sorteddict.py:389', 'src/sortedcontainers/sorteddict.py:421', 'src/sortedcontainers/sorteddict.py:609', 'src/sortedcontainers/sorteddict.py:656', 'src/sortedcontainers/sorteddict.py:685', 'src/sortedcontainers/sorteddict.py:686', 'src/sortedcontainers/sorteddict.py:688', 'src/sortedcontainers/sorteddict.py:689', 'src/sortedcontainers/sorteddict.py:690', 'src/sortedcontainers/sorteddict.py:692', 'src/sortedcontainers/sorteddict.py:693', 'src/sortedcontainers/sorteddict.py:736', 'src/sortedcontainers/sorteddict.py:737', 'src/sortedcontainers/sorteddict.py:739', 'src/sortedcontainers/sorteddict.py:740', 'src/sortedcontainers/sorteddict.py:741', 'src/sortedcontainers/sorteddict.py:743', 'src/sortedcontainers/sorteddict.py:744'], branches=['src/sortedcontainers/sorteddict.py:280->281', 'src/sortedcontainers/sorteddict.py:286->287', 'src/sortedcontainers/sorteddict.py:388->389', 'src/sortedcontainers/sorteddict.py:420->421', 'src/sortedcontainers/sorteddict.py:688->689', 'src/sortedcontainers/sorteddict.py:688->692', 'src/sortedcontainers/sorteddict.py:739->740', 'src/sortedcontainers/sorteddict.py:739->743', 'src/sortedcontainers/sortedlist.py:1254->1255', 'src/sortedcontainers/sortedlist.py:1320->1321', 'src/sortedcontainers/sortedlist.py:1332->1333', 'src/sortedcontainers/sortedlist.py:1337->1338', 'src/sortedcontainers/sortedlist.py:1343->1344', 'src/sortedcontainers/sortedlist.py:1349->1350', 'src/sortedcontainers/sortedlist.py:1361->1364', 'src/sortedcontainers/sortedlist.py:142->145', 'src/sortedcontainers/sortedlist.py:1938->1941', 'src/sortedcontainers/sortedlist.py:1942->1935', 'src/sortedcontainers/sortedlist.py:1942->1943', 'src/sortedcontainers/sortedlist.py:1944->1945']
+timing unit_cost_greedy coverage=False repetition=1: 8.536s
+timing unit_cost_greedy coverage=False repetition=2: 6.881s
+timing unit_cost_greedy coverage=False repetition=3: 6.338s
+timing unit_cost_greedy coverage=True repetition=1: 26.591s
+timing unit_cost_greedy coverage=True repetition=2: 27.819s
+timing unit_cost_greedy coverage=True repetition=3: 28.210s
+
+Three repetitions; wall time includes pytest startup/collection. Optimised objective is sum of per-test floored costs, not wall time.
+               method  tests  coverage  median_wall_s  spread_s                                                   samples_s        pytest_result  speedup_vs_full
+           full_suite    299     False       7.515958  0.560614    [7.87942519999342, 7.318811299977824, 7.515957999974489]  299 passed in 4.89s         1.000000
+           full_suite    299      True      27.296184  2.191567  [26.15408629999729, 27.296184100036044, 28.34565350000048] 299 passed in 24.60s         1.000000
+                  ilp     60     False       5.869989  1.150794   [5.67254470003536, 6.823338799993508, 5.8699886000249535]   60 passed in 2.88s         1.280404
+                  ilp     60      True      21.334877  1.436794 [21.334877200017218, 20.52595120004844, 21.962745299970265]  60 passed in 17.60s         1.279416
+               greedy     86     False       7.828616  2.231409   [8.058527800021693, 7.828615500009619, 5.827119000023231]   86 passed in 3.44s         0.960062
+               greedy     86      True      25.071672  3.514679 [22.41400299995439, 25.071671599987894, 25.928682399971876]  86 passed in 21.75s         1.088726
+fastest_until_covered    111     False       6.434732  1.443067    [7.42066820000764, 6.434732099995017, 5.977600799989887]  111 passed in 3.53s         1.168030
+fastest_until_covered    111      True      26.780150  4.011954  [23.6437393000233, 27.655693600012455, 26.780150400009006] 111 passed in 22.19s         1.019269
+        unit_cost_ilp     58     False       7.021178  0.876567   [7.271287000039592, 6.3947200999828056, 7.02117800002452]   58 passed in 3.77s         1.070470
+        unit_cost_ilp     58      True      28.709013  4.109726 [26.038580199994612, 28.70901320001576, 30.148305700044148]  58 passed in 24.73s         0.950788
+     unit_cost_greedy     58     False       6.880821  2.197903    [8.535783100000117, 6.88082060002489, 6.337880100007169]   58 passed in 3.83s         1.092305
+     unit_cost_greedy     58      True      27.818707  1.619016   [26.59127969999099, 27.818707400001585, 28.2102956000017]  58 passed in 22.99s         0.981217
+
+Objective vs wall time (no coverage):
+               method  objective_s  wall_median_s  startup_collection_overhead_s  objective_as_pct_wall  wall_spread_s  within_timing_spread
+           full_suite         6.72       7.515958                       0.795958              89.409760       0.560614                 False
+                  ilp         2.92       5.869989                       2.949989              49.744560       1.150794                 False
+               greedy         3.16       7.828616                       4.668616              40.364736       2.231409                 False
+fastest_until_covered         3.41       6.434732                       3.024732              52.993659       1.443067                 False
+        unit_cost_ilp         3.05       7.021178                       3.971178              43.440004       0.876567                 False
+     unit_cost_greedy         3.05       6.880821                       3.830821              44.326108       2.197903                 False
+
+Files written: D:\projects\optimize-anything\results\trackJ_subsets.json, D:\projects\optimize-anything\results\trackJ_minimization.csv, D:\projects\optimize-anything\results\trackJ_actual_coverage.csv, D:\projects\optimize-anything\results\trackJ_timings.csv
